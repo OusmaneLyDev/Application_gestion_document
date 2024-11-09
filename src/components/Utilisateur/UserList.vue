@@ -12,8 +12,6 @@
       </div>
   
       <div v-else>
-        
-  
         <!-- Tableau des utilisateurs -->
         <div class="table-container">
           <table class="table table-hover">
@@ -50,7 +48,7 @@
                   </router-link>
   
                   <!-- Bouton pour supprimer l'utilisateur -->
-                  <button class="btn btn-danger btn-sm" @click="deleteUser(user.id)" title="Supprimer">
+                  <button class="delete-button" @click="deleteUser(user.id)" title="Supprimer">
                     <i class="fas fa-trash-alt"></i>
                   </button>
                 </td>
@@ -103,17 +101,16 @@
   
   // Fonction pour supprimer un utilisateur
   const deleteUser = async (id) => {
-  try {
-    console.log('Deleting user with ID:', id);
-    await userStore.deleteUser(id);
-    console.log('User deleted successfully');
-    errorMessage.value = '';  // Réinitialise le message d'erreur après succès
-  } catch (error) {
-    console.error('Erreur lors de la suppression de l\'utilisateur:', error);
-    errorMessage.value = 'Erreur lors de la suppression de l\'utilisateur';
-  }
-};
-
+    try {
+      console.log('Deleting user with ID:', id);
+      await userStore.deleteUser(id);
+      console.log('User deleted successfully');
+      errorMessage.value = '';  // Réinitialise le message d'erreur après succès
+    } catch (error) {
+      console.error('Erreur lors de la suppression de l\'utilisateur:', error);
+      errorMessage.value = 'Erreur lors de la suppression de l\'utilisateur';
+    }
+  };
   </script>
   
   <style scoped>
@@ -163,14 +160,17 @@
     font-size: 0.9rem;
   }
   
-  .btn-danger {
-    background-color: #dc3545;
-    border-color: #dc3545;
+  .delete-button {
+    background: none;
+    border: none;
+    color: #dc3545;
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 0;
   }
   
-  .btn-danger:hover {
-    background-color: #c82333;
-    border-color: #bd2130;
+  .delete-button:hover {
+    color: #c82333;
   }
   </style>
   

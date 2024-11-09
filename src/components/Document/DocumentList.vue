@@ -111,7 +111,7 @@ const deleteDocument = async (id) => {
   }
   
   .table {
-    width: 100%;
+    width: 120%;
     border-collapse: collapse;
   }
   

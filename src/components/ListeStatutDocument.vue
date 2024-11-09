@@ -37,13 +37,15 @@
                 </router-link>
   
                 <!-- Bouton pour supprimer le statut -->
+                <!-- Bouton pour supprimer le statut -->
                 <button 
-                  class="btn btn-danger btn-sm" 
-                  @click="deleteStatut(statut.id)" 
-                  title="Supprimer"
+                class="delete-button" 
+                @click="deleteStatut(statut.id)" 
+                title="Supprimer"
                 >
-                  <i class="fas fa-trash-alt"></i>
+                <i class="fas fa-trash-alt"></i>
                 </button>
+
               </td>
             </tr>
             <tr v-if="statuts.length === 0">
@@ -158,6 +160,19 @@
     margin-right: 8px;
     font-size: 1.2rem;
   }
+  .delete-button {
+  background-color: transparent;
+  border: none;
+  color: red;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: color 0.3s;
+}
+
+.delete-button:hover {
+  color: darkred;
+}
+
   
   .add-statut-btn:hover {
     background-color: #0069d9; /* Couleur du bouton au survol */

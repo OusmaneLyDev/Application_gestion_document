@@ -49,14 +49,15 @@
                   >
                     <i class="fas fa-eye text-info action-icon"></i>
                   </router-link>
-                  <!-- Bouton Supprimer -->
-                  <button 
-                    class="btn btn-danger btn-sm" 
-                    @click="deleteDocumentType(type.id)"
-                    title="Supprimer"
-                  >
-                    <i class="fas fa-trash-alt"></i>
-                  </button>
+                  <!-- Bouton pour supprimer le statut -->
+                <button 
+                class="delete-button" 
+                @click="deleteStatut(statut.id)" 
+                title="Supprimer"
+                >
+                <i class="fas fa-trash-alt"></i>
+                </button>
+
                 </td>
               </tr>
               <!-- Message si aucun type de document n'est trouvé -->
@@ -159,6 +160,19 @@
     background-color: #dc3545;
     border-color: #dc3545;
   }
+  .delete-button {
+  background-color: transparent;
+  border: none;
+  color: red;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: color 0.3s;
+}
+
+.delete-button:hover {
+  color: darkred;
+}
+
   
   .btn-danger:hover {
     background-color: #c82333;
