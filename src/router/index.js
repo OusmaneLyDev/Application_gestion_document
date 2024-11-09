@@ -16,6 +16,8 @@ import EditDocumentType from '@/components/TypeDocument/EditDocumentType.vue';
 import DocumentTypeDetails from '@/components/TypeDocument/DocumentTypeDetails.vue';
 import DocumentStatusDetails from '@/components/StatutDocument/DocumentStatusDetails.vue';
 import EditDocumentStatus from '@/components/StatutDocument/EditDocumentStatus.vue';
+import DetailsUtilisateur from '@/components/Utilisateur/DetailsUtilisateur.vue';
+import ModifierUtilisateur from '@/components/Utilisateur/ModifierUtilisateur.vue';
 
 const routes = [
   {
@@ -47,14 +49,27 @@ const routes = [
     meta: { requiresAuth: true },
   },
   {
+    path: '/utilisateur/modifier/:id',
+    name: 'ModifierUtilisateur',
+    component: ModifierUtilisateur,
+    props: true, // Permet de passer l'ID en tant que prop
+  },
+  {
+    path: '/utilisateur/details/:id',
+    name: 'DetailsUtilisateur',
+    component: DetailsUtilisateur,
+    props: true,
+  },
+  {
     path: '/document-type-details/:id',
     name: 'DocumentTypeDetails',
     component: DocumentTypeDetails,
     props: true,
     meta: { requiresAuth: true },
   },
+  
   {
-    path: '/statuts/:id', // Route pour voir le statut d'un document
+    path: '/statuts/:id', 
     name: 'DocumentStatusDetails',
     component: DocumentStatusDetails,
     props: true,  // Permet de passer l'ID en tant que prop
