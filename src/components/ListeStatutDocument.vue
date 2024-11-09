@@ -1,100 +1,95 @@
 <template>
-  <div class="container">
-    <h1>Liste des Statuts de Document</h1>
-    <button @click="goToAddStatut" class="add-statut-btn">
-      <i class="fas fa-plus"></i> Ajouter un statut
-    </button>
-    <div class="statut-list">
-      <table class="table table-hover">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Nom</th>
-            <th>Description</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="statut in statuts" :key="statut.id">
-            <td>{{ statut.id }}</td>
-            <td>{{ statut.nom }}</td>
-            <td>{{ statut.description }}</td>
-            <td>
-              <!-- Lien pour voir le statut -->
-              <router-link 
-                :to="{ name: 'DocumentStatusDetails', params: { id: statut.id } }" 
-                title="Voir"
-              >
-                <i class="fas fa-eye text-info action-icon"></i>
-              </router-link>
-              
-              <!-- Lien pour modifier le statut -->
-              <router-link 
-                :to="{ name: 'EditDocumentStatus', params: { id: statut.id } }" 
-                title="Modifier"
-              >
-                <i class="fas fa-edit text-warning action-icon"></i>
-              </router-link>
-
-              <!-- Bouton pour supprimer le statut -->
-              <button 
-                class="btn btn-danger btn-sm" 
-                @click="deleteStatut(statut.id)" 
-                title="Supprimer"
-              >
-                <i class="fas fa-trash-alt"></i>
-              </button>
-            </td>
-          </tr>
-          <tr v-if="statuts.length === 0">
-            <td colspan="4" class="text-center">Aucun statut trouvé</td>
-          </tr>
-        </tbody>
-      </table>
+    <div class="container">
+      <h1>Liste des Statuts de Document</h1>
+      <button @click="goToAddStatut" class="add-statut-btn">
+        <i class="fas fa-plus"></i> Ajouter un statut
+      </button>
+      <div class="statut-list">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nom</th>
+              <th>Description</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="statut in statuts" :key="statut.id">
+              <td>{{ statut.id }}</td>
+              <td>{{ statut.nom }}</td>
+              <td>{{ statut.description }}</td>
+              <td>
+                <!-- Lien pour voir le statut -->
+                <router-link 
+                  :to="{ name: 'DocumentStatusDetails', params: { id: statut.id } }" 
+                  title="Voir"
+                >
+                  <i class="fas fa-eye text-info action-icon"></i>
+                </router-link>
+                
+                <!-- Lien pour modifier le statut -->
+                <router-link 
+                  :to="{ name: 'EditDocumentStatus', params: { id: statut.id } }" 
+                  title="Modifier"
+                >
+                  <i class="fas fa-edit text-warning action-icon"></i>
+                </router-link>
+  
+                <!-- Bouton pour supprimer le statut -->
+                <button 
+                  class="btn btn-danger btn-sm" 
+                  @click="deleteStatut(statut.id)" 
+                  title="Supprimer"
+                >
+                  <i class="fas fa-trash-alt"></i>
+                </button>
+              </td>
+            </tr>
+            <tr v-if="statuts.length === 0">
+              <td colspan="4" class="text-center">Aucun statut trouvé</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
-  </div>
-</template>
-
+  </template>
   
   <script>
   import { ref, computed, onMounted } from 'vue';
-  import { Modal } from 'bootstrap';
   import { useDocumentStatusStore } from '../stores/documentStatusStore';
-  import { useRouter } from 'vue-router'; // Importer useRouter pour la navigation
+  import { useRouter } from 'vue-router';
   
   export default {
     name: 'StatutDocumentList',
     setup() {
       const documentStatusStore = useDocumentStatusStore();
-      const selectedStatut = ref({});
-      const router = useRouter(); // Créer une instance de router
+      const router = useRouter();
+      const statuts = computed(() => documentStatusStore.statuts);
   
       onMounted(() => {
         documentStatusStore.fetchStatuts();
       });
   
-      const statuts = computed(() => documentStatusStore.statuts);
-  
-      const openModal = (type, statut) => {
-        selectedStatut.value = statut;
-        const modalId = type === 'view' ? '#viewModal' : type === 'edit' ? '#editModal' : '#deleteModal';
-        const modalElement = document.querySelector(modalId);
-        if (modalElement) {
-          const modalInstance = new Modal(modalElement);
-          modalInstance.show();
+      const deleteStatut = async (id) => {
+        if (confirm('Êtes-vous sûr de vouloir supprimer ce statut ?')) {
+          try {
+            await documentStatusStore.supprimerStatut(id);
+            await documentStatusStore.fetchStatuts();
+          } catch (error) {
+            console.error('Erreur lors de la suppression du statut:', error);
+          }
         }
       };
   
-      // Méthode pour naviguer vers l'ajout de statut
       const goToAddStatut = () => {
-        router.push({ name: 'AddStatut' }); // Remplacer 'AddStatut' par le nom de votre route pour l'ajout
+        router.push({ name: 'AddStatut' });
       };
   
       return {
         statuts,
-        openModal,
-        selectedStatut,
-        goToAddStatut, // Retourner la méthode de navigation
+        deleteStatut,
+        goToAddStatut,
       };
     },
   };
@@ -168,4 +163,4 @@
     background-color: #0069d9; /* Couleur du bouton au survol */
   }
   </style>
-   
+  

@@ -26,13 +26,9 @@
         </div>
   
         <div class="button-group">
-          <button
-            type="button"
-            class="btn btn-outline-secondary btn-lg"
-            @click="goBack"
-          >
-            <i class="bi bi-x-circle"></i> Retour
-          </button>
+            <button class="btn btn-outline-secondary btn-lg" @click="goBack">
+              <i class="bi bi-x-circle"></i> Fermer
+            </button>
         </div>
       </div>
     </div>
