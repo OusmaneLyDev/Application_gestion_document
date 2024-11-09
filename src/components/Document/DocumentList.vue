@@ -48,13 +48,17 @@
                 >
                   <i class="fas fa-eye text-info action-icon"></i>
                 </router-link>
-                <i 
+  
+                <!-- Bouton pour supprimer le document -->
+                <button 
+                  class="delete-button" 
                   @click="deleteDocument(document.id)" 
-                  class="fas fa-trash text-danger action-icon" 
                   title="Supprimer"
-                ></i>
+                >
+                  <i class="fas fa-trash-alt"></i>
+                </button>
               </td>
-            </tr>   
+            </tr>
             <tr v-if="documents.length === 0">
               <td colspan="7" class="text-center">Aucun document trouvé</td>
             </tr>
@@ -63,9 +67,8 @@
       </div>
     </div>
   </template>
-  
-  <script setup>
-import { computed, onMounted } from 'vue'; // Retirez ref ici
+<script setup>
+import { computed, onMounted } from 'vue';
 import { useDocumentStore } from '@/stores/useDocumentStore';
 import { useRouter } from 'vue-router';
 
@@ -81,6 +84,7 @@ const errorMessage = computed(() => documentStore.errorMessage);
 const loading = computed(() => documentStore.loading);
 const alertMessage = computed(() => documentStore.alertMessage);
 
+// Fonction pour formater la date
 const formatDate = (dateString) => {
   const date = new Date(dateString);
   return date.toLocaleDateString('fr-FR', {
@@ -98,49 +102,66 @@ const addDocument = () => {
 // Fonction pour supprimer un document
 const deleteDocument = async (id) => {
   if (confirm('Êtes-vous sûr de vouloir supprimer ce document ?')) {
-    await documentStore.deleteDocument(id);
+    try {
+      await documentStore.deleteDocument(id);
+      await documentStore.fetchDocuments(); // Rafraîchit la liste après suppression
+    } catch (error) {
+      console.error('Erreur lors de la suppression du document:', error);
+      alert('Erreur lors de la suppression du document.');
+    }
   }
 };
 </script>
+<style scoped>
+.document-list {
+  width: 100%;
+  margin-top: 20px;
+}
 
-  
-  <style scoped>
-  .document-list {
-    width: 100%;
-    margin-top: 20px;
-  }
-  
-  .table {
-    width: 120%;
-    border-collapse: collapse;
-  }
-  
-  .table th {
-    background-color: #f2f2f2;
-  }
-  
-  .table th, .table td {
-    padding: 12px;
-  }
-  
-  .table th:nth-child(7), .table td:nth-child(7) {
-    width: 140px;
-  }
-  
-  .error {
-    color: red;
-    font-weight: bold;
-  }
-  
-  .action-icon {
-    cursor: pointer;
-    margin: 0 5px;
-    font-size: 1.2rem;
-    transition: color 0.3s;
-  }
-  
-  .action-icon:hover {
-    color: #0056b3;
-  }
-  </style>
+.table {
+  width: 120%;
+  border-collapse: collapse;
+}
+
+.table th {
+  background-color: #f2f2f2;
+}
+
+.table th, .table td {
+  padding: 12px;
+}
+
+.table th:nth-child(7), .table td:nth-child(7) {
+  width: 140px;
+}
+
+.error {
+  color: red;
+  font-weight: bold;
+}
+
+.action-icon {
+  cursor: pointer;
+  margin: 0 5px;
+  font-size: 1.2rem;
+  transition: color 0.3s;
+}
+
+.delete-button {
+  background-color: transparent;
+  border: none;
+  color: red;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: color 0.3s;
+}
+
+.delete-button:hover {
+  color: darkred;
+}
+
+.action-icon:hover {
+  color: #0056b3;
+}
+</style>
   
