@@ -18,6 +18,9 @@ import DocumentStatusDetails from '@/components/StatutDocument/DocumentStatusDet
 import EditDocumentStatus from '@/components/StatutDocument/EditDocumentStatus.vue';
 import DetailsUtilisateur from '@/components/Utilisateur/DetailsUtilisateur.vue';
 import ModifierUtilisateur from '@/components/Utilisateur/ModifierUtilisateur.vue';
+import AddStatutDocument from '@/components/StatutDocument/AddStatutDocument.vue';
+import AddDocumentType from '@/components/TypeDocument/AddDocumentType.vue';
+
 
 const routes = [
   {
@@ -37,9 +40,20 @@ const routes = [
   },
   {
     path: '/add-type',
+    name: 'AddDocumentType',
+    component: AddDocumentType,
+  },
+  
+  {
+    path: '/add-type',
     name: 'AddType',
     component: AddTypeDocument,
     meta: { requiresAuth: true },
+  },
+  {
+    path: '/add-statut',
+    name: 'AddStatut',
+    component: AddStatutDocument,
   },
   {
     path: '/edit-document-type/:id',

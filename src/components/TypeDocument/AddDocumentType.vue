@@ -2,53 +2,31 @@
     <div v-if="loading" class="loading-container">
       <div class="spinner"></div> Chargement...
     </div>
-    <div v-else class="edit-user-container">
-      <div class="edit-form-card">
-        <h2 class="form-title">Ajouter un Utilisateur</h2>
-        <form @submit.prevent="submitForm">
+    <div v-else class="add-document-type-container">
+      <div class="add-form-card">
+        <h2 class="form-title">Ajouter un Type de Document</h2>
+        <form @submit.prevent="addDocumentType">
           <div class="mb-4">
-            <label for="nom" class="form-label">Nom</label>
+            <label for="nom" class="form-label">Nom du Type</label>
             <input
               type="text"
               id="nom"
-              v-model="nom"
+              v-model="documentType.nom"
               class="form-control form-control-lg custom-input"
-              placeholder="Entrez le nom"
+              placeholder="Entrez le nom du type de document"
               required
             />
           </div>
   
           <div class="mb-4">
-            <label for="email" class="form-label">Email</label>
-            <input
-              type="email"
-              id="email"
-              v-model="email"
+            <label for="description" class="form-label">Description</label>
+            <textarea
+              id="description"
+              v-model="documentType.description"
               class="form-control form-control-lg custom-input"
-              placeholder="Entrez l'email"
+              placeholder="Entrez une description"
               required
-            />
-          </div>
-  
-          <div class="mb-4">
-            <label for="mot_de_passe" class="form-label">Mot de passe</label>
-            <input
-              type="password"
-              id="mot_de_passe"
-              v-model="mot_de_passe"
-              class="form-control form-control-lg custom-input"
-              placeholder="Entrez le mot de passe"
-              required
-            />
-          </div>
-  
-          <div class="mb-4">
-            <label for="role" class="form-label">Rôle</label>
-            <select v-model="role" id="role" class="form-select form-control-lg custom-input" required>
-              <option value="" disabled selected>Choisir un rôle</option>
-              <option value="admin">Administrateur</option>
-              <option value="user">Utilisateur</option>
-            </select>
+            ></textarea>
           </div>
   
           <div class="button-group">
@@ -66,50 +44,37 @@
   
   <script setup>
   import { ref, onMounted } from 'vue';
-  import { useUserStore } from '@/stores/user';
+  import { useDocumentTypeStore } from '@/stores/documentTypeStore';
   import { useRouter } from 'vue-router';
-  import { useToast } from 'vue-toastification';
   
-  const userStore = useUserStore();
+  const documentType = ref({
+    nom: '',
+    description: '',
+  });
+  const documentTypeStore = useDocumentTypeStore();
   const router = useRouter();
-  const toast = useToast();
-  
   const loading = ref(true);
-  const nom = ref('');
-  const email = ref('');
-  const mot_de_passe = ref('');
-  const role = ref('');
   
+  // Simuler un chargement initial
   onMounted(() => {
-    // Simuler un chargement pour l'ouverture de la fenêtre
     setTimeout(() => {
       loading.value = false;
     }, 1000);
   });
   
-  const submitForm = async () => {
+  // Fonction pour ajouter un type de document
+  const addDocumentType = async () => {
     try {
-      const confirmSubmit = confirm("Êtes-vous sûr de vouloir ajouter cet utilisateur ?");
-      if (!confirmSubmit) return;
-  
-      await userStore.addUser(nom.value, email.value, mot_de_passe.value, role.value);
-      toast.success('Utilisateur ajouté avec succès');
-      clearForm();
+      await documentTypeStore.addType(documentType.value);
+      alert('Type de document ajouté avec succès !');
       router.push('/');
     } catch (error) {
-      console.error("Erreur lors de l'ajout de l'utilisateur:", error);
-      const errorMessage = error.response?.data?.message || "Échec de l'ajout de l'utilisateur";
-      toast.error(errorMessage);
+      console.error('Erreur lors de l\'ajout du type de document :', error);
+      alert('Erreur lors de l\'ajout du type de document.');
     }
   };
   
-  const clearForm = () => {
-    nom.value = '';
-    email.value = '';
-    mot_de_passe.value = '';
-    role.value = '';
-  };
-  
+  // Fonction pour retourner à la liste
   const goBack = () => {
     router.push('/');
   };
@@ -129,6 +94,7 @@
     color: #34495e;
   }
   
+  /* Animation du spinner */
   .spinner {
     border: 6px solid #f3f3f3;
     border-top: 6px solid #3498db;
@@ -143,7 +109,8 @@
     100% { transform: rotate(360deg); }
   }
   
-  .edit-user-container {
+  /* Style du formulaire */
+  .add-document-type-container {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -152,12 +119,12 @@
     padding: 20px;
   }
   
-  .edit-form-card {
+  .add-form-card {
     background-color: #fff;
     padding: 30px;
     border-radius: 12px;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-    max-width: 500px;
+    max-width: 600px;
     width: 100%;
   }
   
@@ -177,6 +144,13 @@
     background-color: #f0f0f0;
   }
   
+  .custom-input input,
+  .custom-input textarea {
+    margin: 0;
+    color: #2c3e50;
+    font-size: 1.1rem;
+  }
+  
   .button-group {
     display: flex;
     justify-content: center;
@@ -191,6 +165,5 @@
     background-color: #6c757d;
     color: #fff;
   }
-  
   </style>
   
