@@ -62,9 +62,8 @@ export default {
       }
     };
 
-    // Fonction pour revenir à la liste des types de documents
     const goBack = () => {
-      router.push({ name: 'DocumentTypeList' });
+      router.push({ name: 'ListeTypeDocument' });
     };
 
     onMounted(fetchDocumentType);

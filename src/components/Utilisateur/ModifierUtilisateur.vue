@@ -95,7 +95,6 @@
         }
       };
   
-      // Mettre à jour l'utilisateur
       const updateUser = async () => {
   try {
     console.log('Updating user:', user.value);
@@ -104,7 +103,7 @@
       email: user.value.email,
       role: user.value.role
     });
-    router.push({ name: 'UserList' }); // Redirige vers la liste des utilisateurs après la mise à jour
+    router.push({ name: 'Utilisateurs' }); 
   } catch (error) {
     console.error('Erreur lors de la mise à jour de l\'utilisateur:', error);
     errorMessage.value = 'Erreur lors de la mise à jour de l\'utilisateur';
@@ -114,12 +113,12 @@
   
       // Revenir à la liste des utilisateurs
       const goBack = () => {
-        router.push({ name: 'UserList' });
+        router.push({ name: 'Utilisateurs' });
       };
   
       // Fermer le formulaire
       const closeForm = () => {
-        router.push({ name: 'UserList' }); // Redirige vers la liste des utilisateurs
+        router.push({ name: 'Utilisateurs' }); 
       };
   
       onMounted(fetchUser);

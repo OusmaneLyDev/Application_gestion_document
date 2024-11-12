@@ -24,23 +24,35 @@ export const useDocumentStatusStore = defineStore('documentStatus', {
     },
 
     // Ajouter un nouveau statut
-    async ajouterStatut(nouveauStatut) {
-      try {
-        // Validation des données
-        if (!nouveauStatut.nom || !nouveauStatut.id_Utilisateur) {
-          this.errorMessage = "Nom et id_Utilisateur sont requis.";
-          return;
-        }
-
-        const response = await axios.post(API_URL, nouveauStatut);
-        if (response.status === 201) {
-          this.statuts.push(response.data);  // Ajouter le nouveau statut à la liste
-        }
-      } catch (error) {
-        console.error("Erreur lors de l'ajout du statut :", error);
-        this.errorMessage = "Erreur lors de l'ajout du statut. Veuillez réessayer.";
+    // Ajouter un nouveau statut
+async ajouterStatut(nouveauStatut) {
+    this.errorMessage = null;
+    try {
+      // Validation des données
+      if (!nouveauStatut.nom) {
+        this.errorMessage = "Le nom du statut est requis.";
+        return;
       }
-    },
+      if (!nouveauStatut.id_Utilisateur) {
+        this.errorMessage = "L'identifiant de l'utilisateur est requis.";
+        return;
+      }
+  
+      const response = await axios.post(API_URL, nouveauStatut);
+  
+      if (response.status === 201) {
+        // Ajouter le nouveau statut à la liste
+        this.statuts.push(response.data);
+        alert("Statut ajouté avec succès !");
+      } else {
+        this.errorMessage = "Erreur inattendue lors de l'ajout du statut.";
+      }
+    } catch (error) {
+      console.error("Erreur lors de l'ajout du statut :", error);
+      // Gestion d'erreur détaillée
+      this.errorMessage = error.response?.data?.message || "Erreur lors de l'ajout du statut. Veuillez réessayer.";
+    }
+  },  
 
     // Récupérer les détails d'un statut par ID
     async getStatutDocumentById(id) {

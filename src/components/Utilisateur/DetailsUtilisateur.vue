@@ -6,11 +6,11 @@
         <p><strong>ID:</strong> {{ user.id }}</p>
         <p><strong>Nom:</strong> {{ user.nom }}</p>
         <p><strong>Email:</strong> {{ user.email }}</p>
-        <p><strong>Date de création:</strong> {{ user.date_creation }}</p>
+        <p><strong>Date de création:</strong> {{ formatDate(user.date_creation) }}</p>
         <div v-if="errorMessage" class="alert alert-danger mt-4">
           {{ errorMessage }}
         </div>
-        <button @click="goBack" class="btn btn-secondary">Annuler</button>
+        <router-link :to="{ name: 'Utilisateurs' }" class="btn btn-secondary">Fermer</router-link>
       </div>
     </div>
   </template>
@@ -31,14 +31,17 @@
   
       // Récupérer l'utilisateur par ID
       const fetchUser = async () => {
-        const userId = parseInt(route.params.id); // Convertir en nombre si l'ID est numérique
+        const userId = Number(route.params.id);
+        if (isNaN(userId)) {
+          errorMessage.value = 'ID utilisateur invalide';
+          return;
+        }
+  
         try {
-          // Vérifie si l'utilisateur est déjà dans le store local
           const foundUser = userStore.users.find(u => u.id === userId);
           if (foundUser) {
-            user.value = foundUser; // Copie les données de l'utilisateur
+            user.value = foundUser;
           } else {
-            // Si l'utilisateur n'est pas trouvé localement, on le charge depuis l'API
             await userStore.fetchUserById(userId);
             if (userStore.currentUser) {
               user.value = userStore.currentUser;
@@ -51,14 +54,19 @@
         }
       };
   
-      // Fonction pour retourner à la liste des utilisateurs
-      const goBack = () => {
-        router.push({ name: 'Users' }); // Remplacez 'Users' par le nom de la route de la liste des utilisateurs
+      // Fonction pour formater la date
+      const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('fr-FR', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        });
       };
   
       // Fonction pour fermer le formulaire
       const closeForm = () => {
-        router.push({ name: 'Users' }); // Remplacez 'Users' par le nom de la route de la liste des utilisateurs
+        router.push({ name: 'Utilisateurs' });
       };
   
       onMounted(fetchUser);
@@ -66,10 +74,10 @@
       return {
         user,
         errorMessage,
-        goBack,
-        closeForm
+        closeForm,
+        formatDate,
       };
-    }
+    },
   };
   </script>
   
@@ -91,7 +99,6 @@
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
     max-width: 500px;
     width: 100%;
-    animation: fadeInUp 0.5s ease-in-out;
   }
   
   .close-button {
@@ -102,34 +109,6 @@
     border: none;
     font-size: 1.2rem;
     cursor: pointer;
-  }
-  
-  h2 {
-    text-align: center;
-    font-weight: bold;
-    font-size: 1.8rem;
-    color: #444;
-    margin-bottom: 20px;
-  }
-  
-  p {
-    margin-bottom: 10px;
-  }
-  
-  .alert {
-    margin-top: 20px;
-  }
-  
-  .btn-secondary {
-    margin-top: 20px;
-    width: 100%;
-    padding: 10px;
-    background-color: #f0f0f0;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
-    color: #444;
   }
   </style>
   

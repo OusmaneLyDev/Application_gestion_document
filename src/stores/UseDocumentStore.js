@@ -10,14 +10,17 @@ export const useDocumentStore = defineStore('document', {
     alertMessage: null,
     loading: false,
   }),
+
   actions: {
     async fetchDocuments() {
       this.loading = true;
+      this.alertMessage = null;
       try {
         const response = await axios.get('http://localhost:3051/api/documents');
-        this.documents = response.data;
+        this.$patch({ documents: response.data });
+        console.log('Documents récupérés :', this.documents);
       } catch (error) {
-        this.alertMessage = 'Erreur lors de la récupération des documents.';
+        this.alertMessage = error.response?.data?.message || 'Erreur lors de la récupération des documents.';
         console.error('Erreur:', error);
       } finally {
         this.loading = false;
@@ -25,21 +28,23 @@ export const useDocumentStore = defineStore('document', {
     },
 
     async fetchTypes() {
+      this.alertMessage = null;
       try {
         const response = await axios.get('http://localhost:3051/api/types-document');
-        this.types = response.data;
+        this.$patch({ types: response.data });
       } catch (error) {
-        this.alertMessage = 'Erreur lors de la récupération des types de documents.';
+        this.alertMessage = error.response?.data?.message || 'Erreur lors de la récupération des types de documents.';
         console.error('Erreur:', error);
       }
     },
 
     async fetchStatuses() {
+      this.alertMessage = null;
       try {
         const response = await axios.get('http://localhost:3051/api/statuts-document');
-        this.statuses = response.data;
+        this.$patch({ statuses: response.data });
       } catch (error) {
-        this.alertMessage = 'Erreur lors de la récupération des statuts de documents.';
+        this.alertMessage = error.response?.data?.message || 'Erreur lors de la récupération des statuts de documents.';
         console.error('Erreur:', error);
       }
     },
@@ -53,10 +58,12 @@ export const useDocumentStore = defineStore('document', {
           return;
         }
         const response = await axios.post('http://localhost:3051/api/documents', document);
-        this.documents.push(response.data);
+        this.$patch((state) => {
+          state.documents.push(response.data);
+        });
         this.alertMessage = 'Document ajouté avec succès !';
       } catch (error) {
-        this.alertMessage = error.response ? error.response.data.message : 'Erreur lors de l\'ajout du document.';
+        this.alertMessage = error.response?.data?.message || 'Erreur lors de l\'ajout du document.';
         console.error('Erreur:', error);
       } finally {
         this.loading = false;
@@ -65,15 +72,18 @@ export const useDocumentStore = defineStore('document', {
 
     async editDocument(id, updatedDocument) {
       this.loading = true;
+      this.alertMessage = null;
       try {
         await axios.put(`http://localhost:3051/api/documents/${id}`, updatedDocument);
-        const index = this.documents.findIndex(doc => doc.id === id);
+        const index = this.documents.findIndex((doc) => doc.id === id);
         if (index !== -1) {
-          this.documents[index] = { ...this.documents[index], ...updatedDocument };
+          this.$patch((state) => {
+            state.documents[index] = { ...state.documents[index], ...updatedDocument };
+          });
           this.alertMessage = 'Document modifié avec succès !';
         }
       } catch (error) {
-        this.alertMessage = 'Erreur lors de la modification du document.';
+        this.alertMessage = error.response?.data?.message || 'Erreur lors de la modification du document.';
         console.error('Erreur:', error);
       } finally {
         this.loading = false;
@@ -82,12 +92,18 @@ export const useDocumentStore = defineStore('document', {
 
     async deleteDocument(id) {
       this.loading = true;
+      this.alertMessage = null;
       try {
         await axios.delete(`http://localhost:3051/api/documents/${id}`);
-        this.documents = this.documents.filter(doc => doc.id !== id);
-        this.alertMessage = 'Document supprimé avec succès !';
+        const index = this.documents.findIndex((doc) => doc.id === id);
+        if (index !== -1) {
+          this.$patch((state) => {
+            state.documents.splice(index, 1);
+          });
+          this.alertMessage = 'Document supprimé avec succès !';
+        }
       } catch (error) {
-        this.alertMessage = 'Erreur lors de la suppression du document.';
+        this.alertMessage = error.response?.data?.message || 'Erreur lors de la suppression du document.';
         console.error('Erreur:', error);
       } finally {
         this.loading = false;
@@ -96,6 +112,16 @@ export const useDocumentStore = defineStore('document', {
 
     clearAlert() {
       this.alertMessage = null;
+    },
+
+    resetState() {
+      this.$patch({
+        documents: [],
+        types: [],
+        statuses: [],
+        alertMessage: null,
+        loading: false,
+      });
     },
   },
 });

@@ -77,7 +77,7 @@ const routes = [
   {
     path: '/document-type/:id',
     name: 'DocumentTypeDetails',
-    component: DocumentTypeDetails, // Détails d'un type de document
+    component: DocumentTypeDetails, 
     props: true,
   },
   
@@ -85,13 +85,13 @@ const routes = [
     path: '/statuts/:id', 
     name: 'DocumentStatusDetails',
     component: DocumentStatusDetails,
-    props: true, 
+    // props: true, 
   },
   {
     path: '/statuts/:id/edit', 
     name: 'EditDocumentStatus',
     component: EditDocumentStatus,
-    props: true,  
+    // props: true,  
   },
   {
     path: '/edit/:id',
@@ -123,37 +123,37 @@ const routes = [
     path: '/utilisateurs',
     name: 'Utilisateurs',
     component: UtilisateurView,
-    meta: { requiresAuth: true },
+    // meta: { requiresAuth: true },
   },
   {
     path: '/dashboard',
     name: 'DashboardView',
     component: DashboardView,
-    meta: { requiresAuth: true },
+    // meta: { requiresAuth: true },
   },
   {
     path: '/documents',
     name: 'DocumentsView',
     component: DocumentsView,
-    meta: { requiresAuth: true },
+    // meta: { requiresAuth: true },
   },
   {
     path: '/statut-document',
     name: 'StatutDocument',
     component: ListeStatutDocument,
-    meta: { requiresAuth: true },
+    // meta: { requiresAuth: true },
   },
   {
     path: '/liste-type-document',
     name: 'ListeTypeDocument',
     component: ListeTypeDocument,
-    meta: { requiresAuth: true },
+    // meta: { requiresAuth: true },
   },
   {
     path: '/types-document/:id',
     name: 'TypeDocumentView',
     component: TypeDocumentView,
-    meta: { requiresAuth: true },
+    // meta: { requiresAuth: true },
   },
 ];
 

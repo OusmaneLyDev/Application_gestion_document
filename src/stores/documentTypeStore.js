@@ -30,8 +30,8 @@ export const useDocumentTypeStore = defineStore('documentType', {
     },
 
     // Récupérer tous les types de documents
-    async fetchTypes() {
-      if (this.types.length > 0) return; // Évite un appel API inutile
+    async fetchTypes(forceReload = false) {
+      if (!forceReload && this.types.length > 0) return; 
       this.loading = true;
       try {
         const response = await axios.get(API_URL);
@@ -47,7 +47,7 @@ export const useDocumentTypeStore = defineStore('documentType', {
     async addType(newType) {
       this.loading = true;
       try {
-        // Validation des données
+        // Assurez-vous que les propriétés 'nom' et 'id_Utilisateur' sont présentes
         if (!newType.nom || !newType.id_Utilisateur) {
           this.setErrorMessage("Nom et id_Utilisateur sont requis.");
           return;
@@ -70,10 +70,11 @@ export const useDocumentTypeStore = defineStore('documentType', {
         this.loading = true;
         try {
           const response = await axios.get(`${API_URL}/${id}`);
-          this.typeDetail = response.data;
+          this.typeDetail = response.data;  // Assurez-vous que la réponse est bien assignée
           return response.data;
         } catch (error) {
           this.setErrorMessage("Erreur lors de la récupération du type de document.");
+          console.error('Erreur lors de la récupération du type de document:', error); // Afficher plus de détails sur l'erreur
           throw new Error('Erreur lors de la récupération du type de document');
         } finally {
           this.loading = false;
@@ -84,16 +85,18 @@ export const useDocumentTypeStore = defineStore('documentType', {
     async updateDocumentType(document) {
         this.loading = true;
         try {
-        const response = await axios.put(`${API_URL}/${document.id}`, {
+          // Mise à jour des informations du type de document
+          const response = await axios.put(`${API_URL}/${document.id}`, {
             nom: document.nom,
             description: document.description,
-        });
-        return response.data;
+            id_Utilisateur: document.id_Utilisateur, // Assurez-vous que l'id_Utilisateur est transmis
+          });
+          return response.data;
         } catch (error) {
-        this.setErrorMessage("Erreur lors de la mise à jour du type de document.");
-        throw new Error('Erreur lors de la mise à jour du type de document');
+          this.setErrorMessage("Erreur lors de la mise à jour du type de document.");
+          throw new Error('Erreur lors de la mise à jour du type de document');
         } finally {
-        this.loading = false;
+          this.loading = false;
         }
     },
 
@@ -103,7 +106,8 @@ export const useDocumentTypeStore = defineStore('documentType', {
       try {
         const response = await axios.delete(`${API_URL}/${id}`);
         if (response.status === 204) {
-          this.types = this.types.filter((type) => type.id !== id); // Retirer le type supprimé
+          // Supprimer le type de document de la liste locale
+          this.types = this.types.filter((type) => type.id !== id); 
           this.setErrorMessage("Type de document supprimé avec succès !");
         }
       } catch (error) {

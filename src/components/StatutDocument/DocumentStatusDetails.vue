@@ -26,9 +26,9 @@
         </div>
   
         <div class="button-group">
-            <button class="btn btn-outline-secondary btn-lg" @click="goBack">
-              <i class="bi bi-x-circle"></i> Fermer
-            </button>
+          <button class="btn btn-outline-secondary btn-lg" @click="closeAndRedirect">
+            <i class="bi bi-x-circle"></i> Fermer
+          </button>
         </div>
       </div>
     </div>
@@ -45,7 +45,7 @@
       const route = useRoute();
       const router = useRouter();
       const documentStatusStore = useDocumentStatusStore();
-      
+  
       const statutDocument = ref({
         nom: '',
         description: ''
@@ -62,16 +62,16 @@
         }
       };
   
-      // Fonction pour revenir à la liste des statuts de documents
-      const goBack = () => {
-        router.push({ name: 'DocumentStatusList' });
+      // Fonction pour fermer et rediriger vers la liste des statuts des documents
+      const closeAndRedirect = () => {
+        router.push({ name: 'StatutDocument' });
       };
   
       onMounted(fetchDocumentStatus);
   
       return {
         statutDocument,
-        goBack
+        closeAndRedirect
       };
     }
   };

@@ -71,40 +71,43 @@ export default {
     const errorMessage = ref('');
     const successMessage = ref('');
 
-    // Fonction pour récupérer le type de document à modifier
     const fetchDocumentType = async () => {
       try {
         const documentTypeId = route.params.id;
         const docType = await documentStore.getDocumentTypeById(documentTypeId);
-        documentType.value = docType;
+        
+        if (docType) {
+          documentType.value = {
+            id: docType.id,
+            nom: docType.nom,
+            description: docType.description,
+            idUtilisateur: docType.id_Utilisateur, // Si nécessaire
+          };
+        } else {
+          errorMessage.value = 'Type de document introuvable.';
+        }
       } catch (error) {
         errorMessage.value = 'Erreur lors du chargement du type de document. Veuillez réessayer.';
+        console.error(error);
       }
     };
 
-    // Fonction pour mettre à jour le type de document
     const updateDocumentType = async () => {
       try {
         await documentStore.updateDocumentType(documentType.value);
         successMessage.value = 'Le type de document a été mis à jour avec succès.';
         setTimeout(() => {
-          router.push({ name: 'DocumentTypeList' });
+          router.push({ name: 'ListeTypeDocument' });
         }, 1500);
       } catch (error) {
-        // Gérer l'erreur de manière plus détaillée
-        if (error.response?.data?.error === 'ForeignKeyConstraintError') {
-          errorMessage.value = "Impossible de modifier ce type de document car il est utilisé par d'autres données.";
-        } else {
-          errorMessage.value = error.response?.data?.message || 'Erreur lors de la mise à jour du type de document.';
-        }
+        errorMessage.value = error.response?.data?.message || 'Erreur lors de la mise à jour du type de document.';
       }
     };
 
-    // Fonction pour annuler la modification
     const cancelEdit = () => {
       const shouldCancel = confirm("Vous avez des modifications non enregistrées. Voulez-vous vraiment annuler ?");
       if (shouldCancel) {
-        router.push({ name: 'DocumentTypeList' });
+        router.push({ name: 'ListeTypeDocument' });
       }
     };
 
@@ -122,7 +125,7 @@ export default {
 </script>
 
 <style scoped>
-/* Conteneur principal */
+/* Style du conteneur principal */
 .edit-document-type-container {
   display: flex;
   justify-content: center;
@@ -132,7 +135,7 @@ export default {
   padding: 20px;
 }
 
-/* Carte de formulaire */
+/* Style du formulaire */
 .edit-form-card {
   background-color: #fff;
   padding: 30px;
@@ -142,7 +145,7 @@ export default {
   width: 100%;
 }
 
-/* Titre du formulaire */
+/* Titre */
 .form-title {
   text-align: center;
   font-weight: bold;
@@ -151,7 +154,7 @@ export default {
   margin-bottom: 20px;
 }
 
-/* Champ personnalisé */
+/* Champ de saisie personnalisé */
 .custom-input {
   border: 2px solid #6a11cb;
   border-radius: 8px;
@@ -170,7 +173,7 @@ export default {
   gap: 10px;
 }
 
-/* Bouton d'action */
+/* Bouton d'enregistrement */
 .btn-success {
   background-color: #28a745;
   border: none;
@@ -180,6 +183,7 @@ export default {
   background-color: #218838;
 }
 
+/* Bouton annuler */
 .btn-outline-secondary {
   border: 2px solid #6c757d;
 }
@@ -189,7 +193,7 @@ export default {
   color: #fff;
 }
 
-/* Animation d'entrée */
+/* Animation fadeIn */
 .edit-form-card {
   animation: fadeInUp 0.5s ease-in-out;
 }

@@ -95,7 +95,7 @@
       await userStore.addUser(nom.value, email.value, mot_de_passe.value, role.value);
       toast.success('Utilisateur ajouté avec succès');
       clearForm();
-      router.push('/');
+      router.push('/Utilisateurs');
     } catch (error) {
       console.error("Erreur lors de l'ajout de l'utilisateur:", error);
       const errorMessage = error.response?.data?.message || "Échec de l'ajout de l'utilisateur";
