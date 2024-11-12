@@ -36,18 +36,6 @@
             </div>
 
             <div class="form-group">
-                <label for="utilisateur">Utilisateur</label>
-                <input
-                    type="text"
-                    id="utilisateur"
-                    v-model="document.id_Utilisateur"
-                    required
-                    class="form-control"
-                    placeholder="Entrez l'ID de l'utilisateur"
-                />
-            </div>
-
-            <div class="form-group">
                 <label for="type">Type de Document</label>
                 <select
                     id="type"
@@ -123,7 +111,7 @@ export default {
                 titre: '',
                 description: '',
                 date_depot: '',
-                id_Utilisateur: '',
+                id_Utilisateur: localStorage.getItem('userId') || '', // Récupérer l'ID de l'utilisateur connecté
                 id_TypeDocument: '',
                 id_StatutDocument: '',
             },
@@ -161,6 +149,7 @@ export default {
             this.successMessage = '';
             this.errorMessage = '';
 
+            // Création des données à envoyer
             const formData = new FormData();
             formData.append('titre', this.document.titre);
             formData.append('description', this.document.description);
@@ -168,9 +157,8 @@ export default {
             formData.append('id_Utilisateur', this.document.id_Utilisateur);
             formData.append('id_TypeDocument', this.document.id_TypeDocument);
             formData.append('id_StatutDocument', this.document.id_StatutDocument);
-            // formData.append('file', this.selectedFile);
 
-            console.log('Form data:', {
+            console.log('Données envoyées :', {
                 titre: this.document.titre,
                 description: this.document.description,
                 date_depot: this.document.date_depot,
@@ -202,7 +190,7 @@ export default {
                 titre: '',
                 description: '',
                 date_depot: '',
-                id_Utilisateur: '',
+                id_Utilisateur: localStorage.getItem('userId') || '',
                 id_TypeDocument: '',
                 id_StatutDocument: '',
             };
@@ -214,8 +202,6 @@ export default {
     },
 };
 </script>
-
-
 
 <style scoped>
 .add-document-container {

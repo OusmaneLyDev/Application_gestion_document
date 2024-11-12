@@ -1,63 +1,84 @@
 <template>
-  <div class="detail-document-type-container">
-    <div class="detail-form-card">
+  <div class="document-type-details-container">
+    <div class="details-form-card">
       <h2 class="form-title">Détails du Type de Document</h2>
-      
-      <!-- Affichage des détails -->
-      <p v-if="documentType">
-        <strong>Nom:</strong> {{ documentType.nom }}
-      </p>
-      <p v-if="documentType">
-        <strong>Description:</strong> {{ documentType.description }}
-      </p>
 
-      <!-- Lien pour modifier le type de document -->
-      <div class="button-group">
-        <router-link
-          class="btn btn-primary btn-lg"
-          :to="{ name: 'EditDocumentType', params: { id: documentType.id } }"
-        >
-          <i class="bi bi-pencil-square"></i> Modifier
-        </router-link>
+      <!-- Affichage des informations du type de document -->
+      <div class="form-group">
+        <label for="nom" class="form-label">Nom du Type de Document</label>
+        <input
+          id="nom"
+          v-model="typeDocument.nom"
+          class="form-control form-control-lg custom-input"
+          disabled
+        />
       </div>
 
-      <!-- Message d'erreur en cas de problème -->
-      <div v-if="errorMessage" class="alert alert-danger mt-4">
-        {{ errorMessage }}
+      <div class="form-group">
+        <label for="description" class="form-label">Description</label>
+        <textarea
+          id="description"
+          v-model="typeDocument.description"
+          class="form-control form-control-lg custom-input"
+          rows="4"
+          disabled
+        ></textarea>
+      </div>
+
+      <div class="button-group">
+        <button class="btn btn-outline-secondary btn-lg" @click="goBack">
+          <i class="bi bi-x-circle"></i> Fermer
+        </button>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { ref, onMounted } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import { useDocumentTypeStore } from '@/stores/documentTypeStore';
+
 export default {
-  props: ['id'],
-  data() {
-    return {
-      documentType: null, // Initialisation à null pour éviter l'affichage prématuré
-      errorMessage: null,
-    };
-  },
-  mounted() {
-    this.fetchDocumentType();
-  },
-  methods: {
-    async fetchDocumentType() {
+  name: 'DocumentTypeDetails',
+  setup() {
+    const route = useRoute();
+    const router = useRouter();
+    const documentTypeStore = useDocumentTypeStore();
+
+    const typeDocument = ref({
+      nom: '',
+      description: ''
+    });
+
+    // Fonction pour récupérer les détails du type de document via son ID
+    const fetchDocumentType = async () => {
+      const typeId = route.params.id;
       try {
-        const type = await this.$store.dispatch('getDocumentTypeById', this.id);
-        this.documentType = type;
+        const type = await documentTypeStore.getDocumentTypeById(typeId);
+        typeDocument.value = type;
       } catch (error) {
-        this.errorMessage = 'Erreur lors de la récupération du type de document';
-        console.error('Erreur lors de la récupération du type de document', error);
+        console.error('Erreur lors du chargement des détails du type de document', error);
       }
-    },
-  },
+    };
+
+    // Fonction pour revenir à la liste des types de documents
+    const goBack = () => {
+      router.push({ name: 'DocumentTypeList' });
+    };
+
+    onMounted(fetchDocumentType);
+
+    return {
+      typeDocument,
+      goBack
+    };
+  }
 };
 </script>
 
 <style scoped>
-/* Conteneur principal */
-.detail-document-type-container {
+.document-type-details-container {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -66,8 +87,7 @@ export default {
   padding: 20px;
 }
 
-/* Carte des détails du type de document */
-.detail-form-card {
+.details-form-card {
   background-color: #fff;
   padding: 30px;
   border-radius: 12px;
@@ -76,7 +96,6 @@ export default {
   width: 100%;
 }
 
-/* Titre de la carte */
 .form-title {
   text-align: center;
   font-weight: bold;
@@ -85,52 +104,29 @@ export default {
   margin-bottom: 20px;
 }
 
-/* Groupes de boutons */
+.custom-input {
+  border: 2px solid #6a11cb;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.custom-input:focus {
+  border-color: #2575fc;
+  box-shadow: 0 0 8px rgba(37, 117, 252, 0.5);
+}
+
 .button-group {
   display: flex;
   justify-content: center;
-  margin-top: 20px;
+  gap: 10px;
 }
 
-/* Bouton Modifier */
-.btn-primary {
-  background-color: #007bff;
-  border: none;
-  padding: 12px 24px;
-  font-size: 1.1rem;
-  border-radius: 8px;
-  transition: background-color 0.3s ease;
-  display: flex;
-  align-items: center;
+.btn-outline-secondary {
+  border: 2px solid #6c757d;
 }
 
-.btn-primary:hover {
-  background-color: #0056b3;
-}
-
-/* Icone du bouton Modifier */
-.btn-primary i {
-  margin-right: 8px;
-}
-
-/* Message d'erreur */
-.alert {
-  margin-top: 20px;
-}
-
-/* Animation d'entrée */
-.detail-form-card {
-  animation: fadeInUp 0.5s ease-in-out;
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.btn-outline-secondary:hover {
+  background-color: #6c757d;
+  color: #fff;
 }
 </style>

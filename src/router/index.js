@@ -66,7 +66,7 @@ const routes = [
     path: '/utilisateur/modifier/:id',
     name: 'ModifierUtilisateur',
     component: ModifierUtilisateur,
-    props: true, // Permet de passer l'ID en tant que prop
+    props: true, 
   },
   {
     path: '/utilisateur/details/:id',
@@ -75,36 +75,37 @@ const routes = [
     props: true,
   },
   {
-    path: '/document-type-details/:id',
+    path: '/document-type/:id',
     name: 'DocumentTypeDetails',
-    component: DocumentTypeDetails,
+    component: DocumentTypeDetails, // Détails d'un type de document
     props: true,
-    meta: { requiresAuth: true },
   },
   
   {
     path: '/statuts/:id', 
     name: 'DocumentStatusDetails',
     component: DocumentStatusDetails,
-    props: true,  // Permet de passer l'ID en tant que prop
+    props: true, 
   },
   {
-    path: '/statuts/:id/edit', // Route pour modifier un statut de document
+    path: '/statuts/:id/edit', 
     name: 'EditDocumentStatus',
     component: EditDocumentStatus,
-    props: true,  // Permet de passer l'ID en tant que prop
+    props: true,  
   },
   {
     path: '/edit/:id',
     name: 'EditDocument',
     component: EditDocument,
     meta: { requiresAuth: true },
+    props: true, 
   },
   {
     path: '/document/:id',
     name: 'DocumentDetails',
     component: DocumentDetails,
     meta: { requiresAuth: true },
+    props: true, 
   },
   {
     path: '/add-user',

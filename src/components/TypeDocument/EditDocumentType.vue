@@ -42,6 +42,11 @@
         <div v-if="errorMessage" class="alert alert-danger mt-4">
           {{ errorMessage }}
         </div>
+
+        <!-- Message de succès -->
+        <div v-if="successMessage" class="alert alert-success mt-4">
+          {{ successMessage }}
+        </div>
       </form>
     </div>
   </div>
@@ -64,28 +69,43 @@ export default {
       description: '',
     });
     const errorMessage = ref('');
+    const successMessage = ref('');
 
+    // Fonction pour récupérer le type de document à modifier
     const fetchDocumentType = async () => {
       try {
         const documentTypeId = route.params.id;
         const docType = await documentStore.getDocumentTypeById(documentTypeId);
         documentType.value = docType;
       } catch (error) {
-        errorMessage.value = 'Erreur lors du chargement du type de document';
+        errorMessage.value = 'Erreur lors du chargement du type de document. Veuillez réessayer.';
       }
     };
 
+    // Fonction pour mettre à jour le type de document
     const updateDocumentType = async () => {
       try {
         await documentStore.updateDocumentType(documentType.value);
-        router.push({ name: 'DocumentTypeList' }); // Redirection vers la liste des types de documents
+        successMessage.value = 'Le type de document a été mis à jour avec succès.';
+        setTimeout(() => {
+          router.push({ name: 'DocumentTypeList' });
+        }, 1500);
       } catch (error) {
-        errorMessage.value = 'Erreur lors de la mise à jour du type de document';
+        // Gérer l'erreur de manière plus détaillée
+        if (error.response?.data?.error === 'ForeignKeyConstraintError') {
+          errorMessage.value = "Impossible de modifier ce type de document car il est utilisé par d'autres données.";
+        } else {
+          errorMessage.value = error.response?.data?.message || 'Erreur lors de la mise à jour du type de document.';
+        }
       }
     };
 
+    // Fonction pour annuler la modification
     const cancelEdit = () => {
-      router.push({ name: 'DocumentTypeList' }); 
+      const shouldCancel = confirm("Vous avez des modifications non enregistrées. Voulez-vous vraiment annuler ?");
+      if (shouldCancel) {
+        router.push({ name: 'DocumentTypeList' });
+      }
     };
 
     onMounted(fetchDocumentType);
@@ -93,6 +113,7 @@ export default {
     return {
       documentType,
       errorMessage,
+      successMessage,
       updateDocumentType,
       cancelEdit,
     };

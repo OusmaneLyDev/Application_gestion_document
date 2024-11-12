@@ -13,6 +13,7 @@
   
       <div v-else>
         <!-- Bouton pour ajouter un type de document -->
+        <h1 class="center-text">Liste des types de Document</h1>
         <div class="mb-3">
           <button class="btn btn-primary" @click="addDocumentType">
             <i class="fas fa-plus-circle"></i> Ajouter un Type de Document
@@ -46,18 +47,18 @@
                   <router-link 
                     :to="{ name: 'DocumentTypeDetails', params: { id: type.id } }" 
                     title="Voir"
-                  >
+                    >
                     <i class="fas fa-eye text-info action-icon"></i>
-                  </router-link>
-                  <!-- Bouton pour supprimer le statut -->
-                <button 
-                class="delete-button" 
-                @click="deleteStatut(statut.id)" 
-                title="Supprimer"
-                >
-                <i class="fas fa-trash-alt"></i>
-                </button>
+                    </router-link>
 
+                  <!-- Bouton pour supprimer le type de document -->
+                  <button 
+                    class="delete-button" 
+                    @click="deleteDocumentType(type.id)" 
+                    title="Supprimer"
+                  >
+                    <i class="fas fa-trash-alt"></i>
+                  </button>
                 </td>
               </tr>
               <!-- Message si aucun type de document n'est trouvé -->
@@ -97,10 +98,15 @@
   };
   
   // Fonction pour supprimer un type de document
-  const deleteDocumentType = (id) => {
+  const deleteDocumentType = async (id) => {
     if (window.confirm("Êtes-vous sûr de vouloir supprimer ce type de document ?")) {
-      documentTypeStore.deleteType(id);
-      documentTypeStore.alertMessage = "Type de document supprimé avec succès!";
+      try {
+        await documentTypeStore.deleteType(id);
+        documentTypeStore.setAlertMessage("Type de document supprimé avec succès !");
+        await documentTypeStore.fetchTypes();
+      } catch (error) {
+        documentTypeStore.setErrorMessage("Erreur lors de la suppression du type de document.");
+      }
     }
   };
   </script>
@@ -110,11 +116,11 @@
     width: 100%;
     margin-top: 20px;
     display: flex;
-    justify-content: center; /* Centrer horizontalement */
+    justify-content: center;
   }
   
   .table-container {
-    max-width: 800px; /* Limiter la largeur du tableau */
+    max-width: 800px;
     width: 100%;
   }
   
@@ -140,6 +146,10 @@
     font-weight: bold;
   }
   
+  .alert {
+    margin-bottom: 20px;
+  }
+  
   .action-icon {
     cursor: pointer;
     margin: 0 5px;
@@ -151,32 +161,21 @@
     color: #0056b3;
   }
   
-  .btn-sm {
-    padding: 5px 10px;
-    font-size: 0.9rem;
+  .center-text {
+    text-align: center;
   }
   
-  .btn-danger {
-    background-color: #dc3545;
-    border-color: #dc3545;
-  }
   .delete-button {
-  background-color: transparent;
-  border: none;
-  color: red;
-  cursor: pointer;
-  font-size: 1.2rem;
-  transition: color 0.3s;
-}
-
-.delete-button:hover {
-  color: darkred;
-}
-
+    background-color: transparent;
+    border: none;
+    color: red;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: color 0.3s;
+  }
   
-  .btn-danger:hover {
-    background-color: #c82333;
-    border-color: #bd2130;
+  .delete-button:hover {
+    color: darkred;
   }
   </style>
   

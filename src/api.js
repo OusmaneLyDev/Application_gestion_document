@@ -39,4 +39,4 @@ export default {
   mounted() {
     this.fetchUtilisateurs(); // Appel initial pour récupérer les utilisateurs
   },
-};
+}; 

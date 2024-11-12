@@ -20,11 +20,9 @@ const options = {
     draggable: true, 
 };
 
-// Utilisez les plugins
 app.use(Toast, options); 
 const pinia = createPinia();
 app.use(pinia);
 app.use(router); 
 
-// Montez l'application
 app.mount('#app');

@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-      <h1>Liste des Statuts de Document</h1>
+        <h1 class="center-text">Liste des statuts de Document</h1>
       <button @click="goToAddStatut" class="add-statut-btn">
         <i class="fas fa-plus"></i> Ajouter un statut
       </button>
@@ -127,6 +127,8 @@
   .table th {
     padding: 12px;
   }
+  .center-text { text-align: center; }
+
   
   .action-icon {
     cursor: pointer;
