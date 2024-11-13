@@ -62,7 +62,6 @@
         }
       };
   
-      // Fonction pour fermer et rediriger vers la liste des statuts des documents
       const closeAndRedirect = () => {
         router.push({ name: 'StatutDocument' });
       };

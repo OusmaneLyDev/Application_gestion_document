@@ -111,12 +111,10 @@
 };
 
   
-      // Revenir à la liste des utilisateurs
       const goBack = () => {
         router.push({ name: 'Utilisateurs' });
       };
   
-      // Fermer le formulaire
       const closeForm = () => {
         router.push({ name: 'Utilisateurs' }); 
       };

@@ -99,12 +99,11 @@ const addDocument = () => {
   router.push({ name: 'AddDocument' });
 };
 
-// Fonction pour supprimer un document
 const deleteDocument = async (id) => {
   if (confirm('Êtes-vous sûr de vouloir supprimer ce document ?')) {
     try {
       await documentStore.deleteDocument(id);
-      await documentStore.fetchDocuments(); // Rafraîchit la liste après suppression
+      await documentStore.fetchDocuments(); 
     } catch (error) {
       console.error('Erreur lors de la suppression du document:', error);
       alert('Erreur lors de la suppression du document.');

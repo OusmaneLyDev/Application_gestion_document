@@ -1,133 +1,145 @@
 <template>
     <div class="edit-document-container">
-      <div class="edit-form-card">
+      <div class="edit-document-form-card">
+        <button @click="goBack" class="close-button">X</button>
         <h2 class="form-title">Modifier le Document</h2>
         <form @submit.prevent="updateDocument">
-          <!-- Champ Titre -->
           <div class="mb-4">
-            <label for="titre" class="form-label">Titre</label>
+            <label for="titre" class="form-label">Titre du Document</label>
             <input
+              type="text"
               id="titre"
               v-model="document.titre"
               class="form-control form-control-lg custom-input"
-              placeholder="Entrez le titre du document"
               required
+              placeholder="Entrez le titre"
             />
           </div>
   
-          <!-- Champ Description -->
           <div class="mb-4">
             <label for="description" class="form-label">Description</label>
             <textarea
               id="description"
               v-model="document.description"
               class="form-control form-control-lg custom-input"
-              placeholder="Entrez la description du document"
-              rows="4"
-              required
+              placeholder="Entrez la description"
             ></textarea>
           </div>
   
-          <!-- Champ Type de Document -->
           <div class="mb-4">
             <label for="type" class="form-label">Type de Document</label>
-            <input
+            <select
               id="type"
-              v-model="document.typeDocument.nom"
+              v-model="document.id_TypeDocument"
               class="form-control form-control-lg custom-input"
-              placeholder="Entrez le type de document"
               required
-            />
+            >
+              <option value="" disabled>Choisissez un type</option>
+              <option v-for="type in documentTypes" :key="type.id" :value="type.id">
+                {{ type.nom }}
+              </option>
+            </select>
           </div>
   
-          <!-- Champ Statut du Document -->
           <div class="mb-4">
-            <label for="status" class="form-label">Statut du Document</label>
-            <input
-              id="status"
-              v-model="document.statutDocument.nom"
+            <label for="statut" class="form-label">Statut du Document</label>
+            <select
+              id="statut"
+              v-model="document.id_StatutDocument"
               class="form-control form-control-lg custom-input"
-              placeholder="Entrez le statut du document"
               required
-            />
+            >
+              <option value="" disabled>Choisissez un statut</option>
+              <option v-for="statut in documentStatuses" :key="statut.id" :value="statut.id">
+                {{ statut.nom }}
+              </option>
+            </select>
           </div>
   
-          <!-- Boutons d'action -->
+          <div v-if="successMessage" class="alert alert-success mt-4">{{ successMessage }}</div>
+          <div v-if="errorMessage" class="alert alert-danger mt-4">{{ errorMessage }}</div>
+  
           <div class="button-group">
-            <button type="submit" class="btn btn-success btn-lg me-2">
-              <i class="bi bi-check-circle"></i> Enregistrer
+            <button type="submit" class="btn btn-success btn-lg me-2" :disabled="isSubmitting">
+              <i class="bi bi-check-circle"></i> {{ isSubmitting ? 'Modification en cours...' : 'Enregistrer' }}
             </button>
             <button type="button" class="btn btn-outline-secondary btn-lg" @click="goBack">
               <i class="bi bi-x-circle"></i> Annuler
             </button>
-          </div>
-  
-          <!-- Message d'erreur -->
-          <div v-if="errorMessage" class="alert alert-danger mt-4">
-            {{ errorMessage }}
           </div>
         </form>
       </div>
     </div>
   </template>
   
-  <script>
-  import { ref, onMounted } from 'vue';
+  <script setup>
+  import { onMounted, ref } from 'vue';
   import { useRoute, useRouter } from 'vue-router';
-  import { useDocumentStore } from '@/stores/useDocumentStore';
+  import axios from 'axios';
   
-  export default {
-    name: 'EditDocument',
-    setup() {
-      const documentStore = useDocumentStore();
-      const route = useRoute();
-      const router = useRouter();
+  const route = useRoute();
+  const router = useRouter();
+  const id = route.params.id;
   
-      const document = ref({
-        titre: '',
-        description: '',
-        typeDocument: { nom: '' },
-        statutDocument: { nom: '' },
-      });
-      const errorMessage = ref('');
+  const document = ref({});
+  const documentTypes = ref([]);
+  const documentStatuses = ref([]);
+  const successMessage = ref('');
+  const errorMessage = ref('');
+  const isSubmitting = ref(false);
   
-      const fetchDocument = async () => {
-        try {
-          const documentId = route.params.id;
-          const doc = await documentStore.getDocumentById(documentId);
-          document.value = doc;
-        } catch (error) {
-          errorMessage.value = 'Erreur lors du chargement du document';
-        }
-      };
+  onMounted(() => {
+    fetchDocumentDetails();
+    fetchDocumentTypes();
+    fetchDocumentStatuses();
+  });
   
-      const updateDocument = async () => {
-        try {
-          await documentStore.updateDocument(document.value);
-          router.push({ name: 'DocumentList' });
-        } catch (error) {
-          errorMessage.value = 'Erreur lors de la mise à jour du document';
-        }
-      };
+  const fetchDocumentDetails = async () => {
+    try {
+      const response = await axios.get(`http://localhost:3051/api/documents/${id}`);
+      document.value = response.data;
+    } catch (error) {
+      errorMessage.value = 'Erreur lors de la récupération des détails du document.';
+    }
+  };
   
-      const goBack = () => {
-        router.push({ name: 'DocumentList' });
-      };
+  const fetchDocumentTypes = async () => {
+    try {
+      const response = await axios.get('http://localhost:3051/api/types-document');
+      documentTypes.value = response.data;
+    } catch (error) {
+      errorMessage.value = 'Erreur lors de la récupération des types de document.';
+    }
+  };
   
-      onMounted(fetchDocument);
+  const fetchDocumentStatuses = async () => {
+    try {
+      const response = await axios.get('http://localhost:3051/api/statuts-document');
+      documentStatuses.value = response.data;
+    } catch (error) {
+      errorMessage.value = 'Erreur lors de la récupération des statuts de document.';
+    }
+  };
   
-      return {
-        document,
-        errorMessage,
-        updateDocument,
-        goBack,
-      };
-    },
+  const updateDocument = async () => {
+    isSubmitting.value = true;
+    try {
+      await axios.put(`http://localhost:3051/api/documents/${id}`, document.value);
+      successMessage.value = 'Document modifié avec succès.';
+      setTimeout(() => router.push('/documents'), 2000);
+    } catch (error) {
+      errorMessage.value = 'Erreur lors de la modification du document.';
+    } finally {
+      isSubmitting.value = false;
+    }
+  };
+  
+  const goBack = () => {
+    router.push('/documents');
   };
   </script>
   
   <style scoped>
-  /* Conteneur principal */
   .edit-document-container {
     display: flex;
     justify-content: center;
@@ -137,17 +149,27 @@
     padding: 20px;
   }
   
-  /* Carte de formulaire */
-  .edit-form-card {
+  .edit-document-form-card {
+    position: relative;
     background-color: #fff;
     padding: 30px;
     border-radius: 12px;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
     max-width: 600px;
     width: 100%;
+    animation: fadeInUp 0.5s ease-in-out;
   }
   
-  /* Titre du formulaire */
+  .close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+  }
+  
   .form-title {
     text-align: center;
     font-weight: bold;
@@ -156,58 +178,19 @@
     margin-bottom: 20px;
   }
   
-  /* Champ personnalisé */
-  .custom-input {
-    border: 2px solid #6a11cb;
-    border-radius: 8px;
-    transition: all 0.3s ease;
-  }
-  
-  .custom-input:focus {
-    border-color: #2575fc;
-    box-shadow: 0 0 8px rgba(37, 117, 252, 0.5);
-  }
-  
-  /* Groupe de boutons */
   .button-group {
     display: flex;
     justify-content: center;
     gap: 10px;
   }
   
-  /* Bouton d'action */
-  .btn-success {
-    background-color: #28a745;
-    border: none;
+  .custom-input {
+    border-radius: 8px;
+    border: 1px solid #ddd;
   }
   
-  .btn-success:hover {
-    background-color: #218838;
-  }
-  
-  .btn-outline-secondary {
-    border: 2px solid #6c757d;
-  }
-  
-  .btn-outline-secondary:hover {
-    background-color: #6c757d;
-    color: #fff;
-  }
-  
-  /* Animation d'entrée */
-  .edit-form-card {
-    animation: fadeInUp 0.5s ease-in-out;
-  }
-  
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+  .alert {
+    margin-top: 20px;
   }
   </style>
   

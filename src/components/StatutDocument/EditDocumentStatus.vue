@@ -84,7 +84,7 @@
   
       // Revenir à la liste des statuts de documents
       const goBack = () => {
-        router.push({ name: 'DocumentStatusList' });
+        router.push({ name: 'StatutDocument' });
       };
   
       onMounted(fetchStatutDocument);
