@@ -1,29 +1,43 @@
 # Application GED
 
-This template should help get you started developing with Vue 3 in Vite.
+Application GED, est une solution de gestion électronique de documents (GED) développée avec Vue.js et Bootstrap. Cette application permet de gérer, organiser et traiter les documents en ligne de manière efficace.
 
-## Recommended IDE Setup
+## Prérequis
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+Avant de commencer, assurez-vous d'avoir les éléments suivants installés sur votre machine :
 
-## Customize configuration
+- [Node.js](https://nodejs.org/) (version 14 ou supérieure)
+- [npm](https://www.npmjs.com/)
+- [Vue CLI](https://cli.vuejs.org/)
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+## 🛠️ Technologies utilisées
 
-## Project Setup
+- [Vue.js](https://vuejs.org/) - Framework JavaScript pour construire l'interface utilisateur.
+- [Pinia](https://pinia.vuejs.org/) - Gestion d'état pour Vue.js.
+- [Axios](https://axios-http.com/) - Client HTTP pour la communication avec l'API.
+- [Bootstrap](https://getbootstrap.com/) - Framework CSS pour le design et la réactivité.
 
-```sh
-npm install
-```
+## Installation
 
-### Compile and Hot-Reload for Development
+1. Clonez le dépôt de projet :
 
-```sh
-npm run dev
-```
+```bash
+git clone https://github.com/OusmaneLyDev/Application_gestion_document.git
+cd Application_gestion_document
 
-### Compile and Minify for Production
+2. Installer les dépendances
 
-```sh
-npm run build
-```
+    ```bash
+    npm install
+    ```
+
+3. Lancer l'application en mode dévéloppement
+
+    ```bash
+    npm run dev
+    ```
+
+## Auteur
+
+[Ethman Ly](https://github.com/OusmaneLyDev).
+
