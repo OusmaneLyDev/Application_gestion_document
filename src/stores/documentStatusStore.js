@@ -23,8 +23,7 @@ export const useDocumentStatusStore = defineStore('documentStatus', {
       }
     },
 
-    // Ajouter un nouveau statut
-    // Ajouter un nouveau statut
+
 async ajouterStatut(nouveauStatut) {
     this.errorMessage = null;
     try {

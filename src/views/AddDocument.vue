@@ -145,46 +145,53 @@ export default {
             }
         },
         async submitForm() {
-            this.isSubmitting = true;
-            this.successMessage = '';
-            this.errorMessage = '';
+    console.log('Données avant envoi :', this.document);
 
-            // Création des données à envoyer
-            const formData = new FormData();
-            formData.append('titre', this.document.titre);
-            formData.append('description', this.document.description);
-            formData.append('date_depot', this.document.date_depot);
-            formData.append('id_Utilisateur', this.document.id_Utilisateur);
-            formData.append('id_TypeDocument', this.document.id_TypeDocument);
-            formData.append('id_StatutDocument', this.document.id_StatutDocument);
+    // Vérification des champs requis
+    if (!this.document.titre || !this.document.description || !this.document.date_depot || !this.document.id_Utilisateur || !this.document.id_TypeDocument || !this.document.id_StatutDocument) {
+        this.errorMessage = 'Tous les champs doivent être remplis.';
+        return;
+    }
 
-            console.log('Données envoyées :', {
-                titre: this.document.titre,
-                description: this.document.description,
-                date_depot: this.document.date_depot,
-                id_Utilisateur: this.document.id_Utilisateur,
-                id_TypeDocument: this.document.id_TypeDocument,
-                id_StatutDocument: this.document.id_StatutDocument,
-            });
+    // Vérifiez si id_Utilisateur est vide
+    if (!this.document.id_Utilisateur) {
+        this.errorMessage = 'ID Utilisateur manquant. Veuillez vous connecter.';
+        return;
+    }
 
-            try {
-                await axios.post('http://localhost:3051/api/documents', formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
-                    },
-                });
+    this.isSubmitting = true;
+    this.successMessage = '';
+    this.errorMessage = '';
 
-                this.successMessage = 'Document ajouté avec succès.';
-                this.resetForm();
-                setTimeout(() => {
-                    this.$router.push({ name: 'Documents' });
-                }, 2000);
-            } catch (error) {
-                this.errorMessage = "Erreur lors de l'ajout du document.";
-            } finally {
-                this.isSubmitting = false;
-            }
-        },
+    const formData = new FormData();
+    formData.append('titre', this.document.titre);
+    formData.append('description', this.document.description);
+    formData.append('date_depot', this.document.date_depot);
+    formData.append('id_Utilisateur', this.document.id_Utilisateur);
+    formData.append('id_TypeDocument', this.document.id_TypeDocument);
+    formData.append('id_StatutDocument', this.document.id_StatutDocument);
+
+    console.log('FormData avant envoi:', formData);
+
+    try {
+        await axios.post('http://localhost:3051/api/documents', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+
+        this.successMessage = 'Document ajouté avec succès.';
+        this.resetForm();
+        setTimeout(() => {
+            this.$router.push({ name: 'Documents' });
+        }, 2000);
+    } catch (error) {
+        console.error('Erreur lors de l\'ajout du document :', error);
+        this.errorMessage = "Erreur lors de l'ajout du document.";
+    } finally {
+        this.isSubmitting = false;
+    }
+},
         resetForm() {
             this.document = {
                 titre: '',

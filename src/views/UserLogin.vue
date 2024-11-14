@@ -29,7 +29,6 @@
     methods: {
       async handleLogin() {
         try {
-          // Requête de connexion
           const response = await fetch('http://localhost:3051/api/auth/login', {
             method: 'POST',
             headers: {
@@ -43,7 +42,6 @@
   
           const data = await response.json();
   
-          // Vérifier si la connexion est réussie
           if (response.ok) {
             // Stocker le token dans le localStorage
             localStorage.setItem('token', data.token);
