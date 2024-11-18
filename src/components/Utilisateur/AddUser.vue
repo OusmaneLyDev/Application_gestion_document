@@ -47,7 +47,7 @@
             <select v-model="role" id="role" class="form-select form-control-lg custom-input" required>
               <option value="" disabled selected>Choisir un rôle</option>
               <option value="admin">Administrateur</option>
-              <option value="user">Utilisateur</option>
+              <option value="user">Gestionnaire RH</option>
             </select>
           </div>
   
@@ -116,81 +116,116 @@
   </script>
   
   <style scoped>
-  /* Conteneur de chargement */
+  /* Conteneur de chargement sans arrière-plan */
   .loading-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     height: 100vh;
-    background-color: #f7f7f7;
     font-family: Arial, sans-serif;
     font-size: 1.5rem;
-    color: #34495e;
+    color: #2c3e50;
   }
-  
+
+  /* Spinner de chargement */
   .spinner {
-    border: 6px solid #f3f3f3;
+    border: 6px solid #e0e0e0;
     border-top: 6px solid #3498db;
     border-radius: 50%;
     width: 60px;
     height: 60px;
     animation: spin 1s linear infinite;
   }
-  
+
   @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
   }
-  
+
+  /* Conteneur pour l'édition de formulaire sans arrière-plan */
   .edit-user-container {
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background: linear-gradient(to right, #6a11cb, #2575fc);
     padding: 20px;
   }
-  
+
+  /* Carte du formulaire */
   .edit-form-card {
     background-color: #fff;
     padding: 30px;
     border-radius: 12px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
     max-width: 500px;
     width: 100%;
+    animation: fadeInUp 0.5s ease-in-out;
   }
-  
+
+  /* Titre du formulaire */
   .form-title {
     text-align: center;
     font-weight: bold;
     font-size: 1.8rem;
-    color: #444;
+    color: #333;
     margin-bottom: 20px;
   }
-  
+
+  /* Input personnalisé */
   .custom-input {
     border: 2px solid #6a11cb;
     border-radius: 8px;
     padding: 10px;
     font-size: 1rem;
-    background-color: #f0f0f0;
+    width: 100%;
+    background-color: #f9f9f9;
+    transition: border-color 0.3s ease;
   }
-  
+
+  .custom-input:focus {
+    border-color: #2575fc;
+    box-shadow: 0 0 8px rgba(37, 117, 252, 0.5);
+  }
+
+  /* Groupe de boutons */
   .button-group {
     display: flex;
     justify-content: center;
     gap: 10px;
+    margin-top: 20px;
   }
-  
+
+  /* Bouton secondaire */
   .btn-outline-secondary {
     border: 2px solid #6c757d;
+    background: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    color: #6c757d;
+    transition: background-color 0.3s, color 0.3s;
   }
-  
+
   .btn-outline-secondary:hover {
     background-color: #6c757d;
     color: #fff;
   }
-  
-  </style>
-  
+
+  /* Animation d'apparition */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>

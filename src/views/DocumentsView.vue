@@ -11,7 +11,7 @@
   </template>
   
   <script>
-  import { useDocumentStore } from '@/stores/useDocumentStore';
+  import { useDocumentStore } from '@/stores/UseDocumentStore';
   import { ref, onMounted } from 'vue';
   import { useRouter } from 'vue-router';
   import DocumentList from '@/components/Document/DocumentList.vue';

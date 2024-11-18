@@ -32,10 +32,10 @@ async ajouterStatut(nouveauStatut) {
         this.errorMessage = "Le nom du statut est requis.";
         return;
       }
-      if (!nouveauStatut.id_Utilisateur) {
-        this.errorMessage = "L'identifiant de l'utilisateur est requis.";
-        return;
-      }
+    //   if (!nouveauStatut.id_Utilisateur) {
+    //     this.errorMessage = "L'identifiant de l'utilisateur est requis.";
+    //     return;
+    //   }
   
       const response = await axios.post(API_URL, nouveauStatut);
   
@@ -48,7 +48,6 @@ async ajouterStatut(nouveauStatut) {
       }
     } catch (error) {
       console.error("Erreur lors de l'ajout du statut :", error);
-      // Gestion d'erreur détaillée
       this.errorMessage = error.response?.data?.message || "Erreur lors de l'ajout du statut. Veuillez réessayer.";
     }
   },  
@@ -76,7 +75,7 @@ async ajouterStatut(nouveauStatut) {
         if (response.status === 200) {
           const index = this.statuts.findIndex((statut) => statut.id === id);
           if (index !== -1) {
-            this.statuts[index] = response.data;  // Mettre à jour le statut dans la liste
+            this.statuts[index] = response.data;  
           }
         }
       } catch (error) {

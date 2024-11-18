@@ -55,12 +55,12 @@
 <script>
 import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { useDocumentStore } from '@/stores/useDocumentStore';
+import { useDocumentTypeStore } from '@/stores/documentTypeStore';
 
 export default {
   name: 'EditDocumentType',
   setup() {
-    const documentStore = useDocumentStore();
+    const documentStore = useDocumentTypeStore();
     const route = useRoute();
     const router = useRouter();
 
@@ -131,9 +131,11 @@ export default {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: linear-gradient(to right, #6a11cb, #2575fc);
+  /* Supprimé l'arrière-plan coloré */
+  background: none;
   padding: 20px;
 }
+
 
 /* Style du formulaire */
 .edit-form-card {
@@ -144,6 +146,8 @@ export default {
   max-width: 600px;
   width: 100%;
 }
+/* .background: transparent; */
+
 
 /* Titre */
 .form-title {

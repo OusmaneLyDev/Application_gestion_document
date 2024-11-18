@@ -1,4 +1,3 @@
-// src/stores/documentTypeStore.js
 import { defineStore } from 'pinia';
 import axios from '../axios'; // Assurez-vous que le chemin est correct
 
@@ -10,15 +9,15 @@ export const useDocumentTypeStore = defineStore('documentType', {
     types: [],                   // Liste des types de documents
     typeDetail: null,            // Détails d'un type de document spécifique
     errorMessage: null,          // Message d'erreur
+    successMessage: null,        // Message de succès
     loading: false,              // Indicateur de chargement
   }),
 
   actions: {
-    // Méthode pour définir le message d'erreur
+    // Définir le message d'erreur
     setErrorMessage(message) {
       this.errorMessage = message;
       console.error(message);
-      // Effacer l'erreur après 5 secondes
       setTimeout(() => {
         this.clearErrorMessage();
       }, 5000);
@@ -29,9 +28,23 @@ export const useDocumentTypeStore = defineStore('documentType', {
       this.errorMessage = null;
     },
 
+    // Définir le message de succès
+    setSuccessMessage(message) {
+      this.successMessage = message;
+      console.log(message);
+      setTimeout(() => {
+        this.clearSuccessMessage();
+      }, 5000);
+    },
+
+    // Effacer le message de succès
+    clearSuccessMessage() {
+      this.successMessage = null;
+    },
+
     // Récupérer tous les types de documents
     async fetchTypes(forceReload = false) {
-      if (!forceReload && this.types.length > 0) return; 
+      if (!forceReload && this.types.length > 0) return;
       this.loading = true;
       try {
         const response = await axios.get(API_URL);
@@ -47,19 +60,18 @@ export const useDocumentTypeStore = defineStore('documentType', {
     async addType(newType) {
       this.loading = true;
       try {
-        // Assurez-vous que les propriétés 'nom' et 'id_Utilisateur' sont présentes
-        if (!newType.nom || !newType.id_Utilisateur) {
+        if (!newType.nom ) {
           this.setErrorMessage("Nom et id_Utilisateur sont requis.");
           return;
         }
 
         const response = await axios.post(API_URL, newType);
         if (response.status === 201) {
-          this.types.push(response.data); // Ajouter le nouveau type à la liste
-          this.setErrorMessage("Type de document ajouté avec succès !");
+          this.types.push(response.data);
+          this.setSuccessMessage("Type de document ajouté avec succès !");
         }
       } catch (error) {
-        this.setErrorMessage("Erreur lors de l'ajout du type de document. Veuillez réessayer.");
+        this.setErrorMessage(error.response?.data?.message || "Erreur lors de l'ajout du type de document.");
       } finally {
         this.loading = false;
       }
@@ -67,37 +79,42 @@ export const useDocumentTypeStore = defineStore('documentType', {
 
     // Récupérer les détails d'un type de document par ID
     async getDocumentTypeById(id) {
-        this.loading = true;
-        try {
-          const response = await axios.get(`${API_URL}/${id}`);
-          this.typeDetail = response.data;  // Assurez-vous que la réponse est bien assignée
-          return response.data;
-        } catch (error) {
-          this.setErrorMessage("Erreur lors de la récupération du type de document.");
-          console.error('Erreur lors de la récupération du type de document:', error); // Afficher plus de détails sur l'erreur
-          throw new Error('Erreur lors de la récupération du type de document');
-        } finally {
-          this.loading = false;
-        }
-      },
+      this.loading = true;
+      try {
+        const response = await axios.get(`${API_URL}/${id}`);
+        this.typeDetail = response.data;
+        return response.data;
+      } catch (error) {
+        this.setErrorMessage(error.response?.data?.message || "Erreur lors de la récupération du type de document.");
+        throw new Error('Erreur lors de la récupération du type de document');
+      } finally {
+        this.loading = false;
+      }
+    },
 
-    // Méthode pour mettre à jour un type de document
+    // Mettre à jour un type de document
     async updateDocumentType(document) {
-        this.loading = true;
-        try {
-          // Mise à jour des informations du type de document
-          const response = await axios.put(`${API_URL}/${document.id}`, {
-            nom: document.nom,
-            description: document.description,
-            id_Utilisateur: document.id_Utilisateur, // Assurez-vous que l'id_Utilisateur est transmis
-          });
-          return response.data;
-        } catch (error) {
-          this.setErrorMessage("Erreur lors de la mise à jour du type de document.");
-          throw new Error('Erreur lors de la mise à jour du type de document');
-        } finally {
-          this.loading = false;
+      this.loading = true;
+      try {
+        const response = await axios.put(`${API_URL}/${document.id}`, {
+          nom: document.nom,
+          description: document.description,
+          id_Utilisateur: document.id_Utilisateur,
+        });
+
+        // Mettre à jour la liste locale
+        const index = this.types.findIndex((type) => type.id === document.id);
+        if (index !== -1) {
+          this.types[index] = response.data;
         }
+        this.setSuccessMessage("Le type de document a été mis à jour avec succès.");
+        return response.data;
+      } catch (error) {
+        this.setErrorMessage(error.response?.data?.message || "Erreur lors de la mise à jour du type de document.");
+        throw new Error('Erreur lors de la mise à jour du type de document');
+      } finally {
+        this.loading = false;
+      }
     },
 
     // Supprimer un type de document par ID
@@ -106,12 +123,11 @@ export const useDocumentTypeStore = defineStore('documentType', {
       try {
         const response = await axios.delete(`${API_URL}/${id}`);
         if (response.status === 204) {
-          // Supprimer le type de document de la liste locale
-          this.types = this.types.filter((type) => type.id !== id); 
-          this.setErrorMessage("Type de document supprimé avec succès !");
+          this.types = this.types.filter((type) => type.id !== id);
+          this.setSuccessMessage("Type de document supprimé avec succès !");
         }
       } catch (error) {
-        this.setErrorMessage("Erreur lors de la suppression du type de document. Veuillez réessayer.");
+        this.setErrorMessage(error.response?.data?.message || "Erreur lors de la suppression du type de document.");
       } finally {
         this.loading = false;
       }

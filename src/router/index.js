@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import HomePage from '../components/HomePage.vue';
 import DashboardView from '../views/DashboardView.vue';
 import DocumentsView from '../views/DocumentsView.vue';
-import UserLogin from '../components/UserLogin.vue';
+import Login from '../components/Login.vue';
 import AddDocument from '../views/AddDocument.vue';
 import ListeStatutDocument from '../components/ListeStatutDocument.vue';
 import ListeTypeDocument from '../components/ListeTypeDocument.vue';
@@ -23,14 +23,15 @@ import AddDocumentType from '@/components/TypeDocument/AddDocumentType.vue';
 
 
 const routes = [
+//   {
+//     path: '/',
+//     redirect: '/login',
+//     component: Login,
+//   },
   {
     path: '/',
-    redirect: '/login',
-  },
-  {
-    path: '/login',
-    name: 'UserLogin',
-    component: UserLogin,
+    name: 'Login',
+    component: Login,
   },
   {
     path: '/homepage',
@@ -48,7 +49,7 @@ const routes = [
     path: '/add-type',
     name: 'AddType',
     component: AddTypeDocument,
-    meta: { requiresAuth: true },
+    // meta: { requiresAuth: true },
   },
   {
     path: '/add-statut',
@@ -60,7 +61,7 @@ const routes = [
     name: 'EditDocumentType',
     component: EditDocumentType,
     props: true,
-    meta: { requiresAuth: true },
+    // meta: { requiresAuth: true },
   },
   {
     path: '/utilisateur/modifier/:id',
@@ -104,20 +105,20 @@ const routes = [
     path: '/document/:id',
     name: 'DocumentDetails',
     component: DocumentDetails,
-    meta: { requiresAuth: true },
+    // meta: { requiresAuth: true },
     props: true, 
   },
   {
     path: '/add-user',
     name: 'AddUser',
     component: AddUser,
-    meta: { requiresAuth: true },
+    // meta: { requiresAuth: true },
   },
   {
     path: '/add-document',
     name: 'AddDocument',
     component: AddDocument,
-    meta: { requiresAuth: true },
+    // meta: { requiresAuth: true },
   },
   {
     path: '/utilisateurs',
@@ -162,14 +163,16 @@ const router = createRouter({
   routes,
 });
 
-router.beforeEach((to, from, next) => {
-  const isAuthenticated = !!localStorage.getItem('token');
 
-  if (to.meta.requiresAuth && !isAuthenticated) {
-    next({ name: 'UserLogin' });
-  } else {
-    next();
-  }
-});
+router.beforeEach((to, from, next) => {
+    const isAuthenticated = !!localStorage.getItem('jwtToken');
+  
+    if (to.meta.requiresAuth && !isAuthenticated) {
+      next({ name: 'Login' }); // Redirige vers la page de connexion si non authentifié
+    } else {
+      next(); // Sinon, continue vers la page demandée
+    }
+  });
+  
 
 export default router;

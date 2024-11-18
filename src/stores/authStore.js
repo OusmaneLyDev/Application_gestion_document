@@ -1,62 +1,73 @@
-// src/stores/authStore.js
-import { defineStore } from 'pinia';
-import { ref } from 'vue';
-import axios from 'axios'; 
+import { defineStore } from "pinia";
+import axios from '@/axios';
 
-export const useAuthStore = defineStore('auth', () => {
-    const user = ref(null);
-    const error = ref(null);
+export const useAuthStore = defineStore("auth", {
+  state: () => ({
+    isAuthenticated: false,
+    user: null,
+    token: null,
+    role: null,
+    name: null,
+  }),
 
-    const registerUser = async (userData) => {
-        try {
-            const response = await axios.post('http://localhost:3051/api/auth/register', userData); // Remplacez par l'URL de votre API d'inscription
-            return response.data;
-        } catch (err) {
-            throw err.response.data || err.message;
-        }
-    };
+  getters: {
+    // Getter pour récupérer l'ID de l'utilisateur connecté
+    userId(state) {
+      return state.user?.id || null;
+    },
+  },
 
-    const loginUser = async (credentials) => {
-        try {
-            const response = await axios.post('http://localhost:3051/api/auth/login', credentials); // Remplacez par l'URL de votre API de connexion
-            return response.data;
-        } catch (err) {
-            throw err.response.data || err.message;
-        }
-    };
+  actions: {
+    async login(email, password) {
+      try {
+        console.log(`[LOGIN] Tentative de connexion avec : email=${email}`);
 
-    // Action pour l'enregistrement d'un utilisateur
-    const register = async (userData) => {
-        error.value = null;
-        try {
-            const result = await registerUser(userData); // Appel à la fonction d'enregistrement
-            user.value = result.utilisateur; // Enregistrez les données de l'utilisateur
-            return result;
-        } catch (err) {
-            error.value = err.error || 'Erreur lors de l\'inscription';
-            throw err;
-        }
-    };
+        const response = await axios.post("/auth/login", {
+          email,
+          mot_de_passe: password,
+        });
 
-    // Action pour la connexion d'un utilisateur
-    const login = async (credentials) => {
-        error.value = null;
-        try {
-            const result = await loginUser(credentials); // Appel à la fonction de connexion
-            user.value = result.utilisateur; // Enregistrez les données de l'utilisateur
-            localStorage.setItem('token', result.token); // Stocker le token
-            return result;
-        } catch (err) {
-            error.value = err.error || 'Erreur lors de la connexion';
-            throw err;
-        }
-    };
+        const { accessToken, user } = response.data;
 
-    // Action pour la déconnexion
-    const logout = () => {
-        user.value = null; // Réinitialiser les données de l'utilisateur
-        localStorage.removeItem('token'); // Supprimer le token
-    };
+        if (!accessToken) throw new Error("Token manquant.");
+        if (!user) throw new Error("Données utilisateur manquantes.");
 
-    return { user, error, register, login, logout };
+        // Stocker les informations utilisateur
+        this.isAuthenticated = true;
+        this.token = accessToken;
+        this.user = user;
+        this.role = user.role;
+        this.name = user.nom;
+
+        // Sauvegarder dans le localStorage
+        localStorage.setItem("userId", user.id);
+        localStorage.setItem("userName", user.nom);
+        localStorage.setItem("userRole", user.role);
+        localStorage.setItem("authToken", accessToken);
+
+        // Ajouter le token aux en-têtes par défaut d'Axios
+        axios.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
+
+        console.log("[LOGIN] Utilisateur authentifié :", user);
+
+        return { success: true, message: "Connexion réussie" };
+      } catch (error) {
+        const errorMessage = error.response?.data?.message || error.message;
+        console.error("[LOGIN] Erreur :", errorMessage);
+        return { success: false, message: errorMessage };
+      }
+    },
+
+    logout() {
+      console.log("[LOGOUT] Déconnexion...");
+      this.isAuthenticated = false;
+      this.user = null;
+      this.token = null;
+      this.role = null;
+      this.name = null;
+      localStorage.clear();
+      delete axios.defaults.headers.common["Authorization"];
+      return Promise.resolve();
+    },
+  },
 });

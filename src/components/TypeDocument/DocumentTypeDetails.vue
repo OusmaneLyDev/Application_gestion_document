@@ -82,7 +82,8 @@ export default {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: linear-gradient(to right, #6a11cb, #2575fc);
+  /* Supprimer l'arrière-plan coloré */
+  background: none;
   padding: 20px;
 }
 

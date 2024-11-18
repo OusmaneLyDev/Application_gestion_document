@@ -62,7 +62,7 @@
   <script setup>
   import { onMounted, computed } from 'vue';
   import { useRoute, useRouter } from 'vue-router';
-  import { useDocumentStore } from '@/stores/useDocumentStore';
+  import { useDocumentStore } from '@/stores/UseDocumentStore';
   
   const documentStore = useDocumentStore();
   const route = useRoute();

@@ -1,6 +1,6 @@
-// stores/documentStore.js
 import { defineStore } from 'pinia';
 import axios from 'axios';
+import { useToast } from 'vue-toastification';
 
 export const useDocumentStore = defineStore('document', {
   state: () => ({
@@ -13,17 +13,44 @@ export const useDocumentStore = defineStore('document', {
   }),
 
   actions: {
+    // Récupérer le token depuis le stockage local ou un store global
+    getAuthToken() {
+      const token = localStorage.getItem('authToken');
+      if (!token) {
+        console.warn('Aucun token trouvé dans le stockage local.');
+      }
+      return token;
+    },
+
+    getHeaders() {
+      const token = this.getAuthToken();
+      return {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: token ? `Bearer ${token}` : '',
+        },
+      };
+    },
+
+    // Gestionnaire d'erreur global
+    handleError(error, action) {
+      const toast = useToast();
+      this.alertMessage = error.response?.data?.error || `Erreur lors de ${action}.`;
+      toast.error(this.alertMessage);
+      console.error(`Erreur lors de ${action} :`, error);
+    },
+
     // Récupérer tous les documents
     async fetchDocuments() {
       this.loading = true;
-      this.alertMessage = null;
+      const toast = useToast();
       try {
-        const response = await axios.get('http://localhost:3051/api/documents');
+        const response = await axios.get('http://localhost:3051/api/documents', this.getHeaders());
         this.documents = response.data;
+        toast.success('Documents récupérés avec succès !');
         console.log('Documents récupérés :', this.documents);
       } catch (error) {
-        this.alertMessage = error.response?.data?.error || 'Erreur lors de la récupération des documents.';
-        console.error('Erreur:', error);
+        this.handleError(error, 'la récupération des documents');
       } finally {
         this.loading = false;
       }
@@ -32,14 +59,13 @@ export const useDocumentStore = defineStore('document', {
     // Récupérer un document par ID
     async fetchDocumentById(id) {
       this.loading = true;
-      this.alertMessage = null;
       try {
-        const response = await axios.get(`http://localhost:3051/api/documents/${id}`);
+        const response = await axios.get(`http://localhost:3051/api/documents/${id}`, this.getHeaders());
         this.selectedDocument = response.data;
+        useToast().success('Document récupéré avec succès !');
         console.log('Document récupéré :', this.selectedDocument);
       } catch (error) {
-        this.alertMessage = error.response?.data?.error || 'Erreur lors de la récupération du document.';
-        console.error('Erreur:', error);
+        this.handleError(error, 'la récupération du document');
       } finally {
         this.loading = false;
       }
@@ -48,11 +74,11 @@ export const useDocumentStore = defineStore('document', {
     // Ajouter un nouveau document
     async addDocument(document) {
       this.loading = true;
-      this.alertMessage = null;
       try {
         const { titre, description, date_depot, id_Utilisateur, id_TypeDocument, id_StatutDocument } = document;
         if (!titre || !id_Utilisateur || !id_TypeDocument || !id_StatutDocument || !date_depot) {
           this.alertMessage = 'Tous les champs obligatoires doivent être renseignés.';
+          useToast().error(this.alertMessage);
           return;
         }
         const response = await axios.post('http://localhost:3051/api/documents', {
@@ -62,12 +88,11 @@ export const useDocumentStore = defineStore('document', {
           id_Utilisateur,
           id_TypeDocument,
           id_StatutDocument,
-        });
+        }, this.getHeaders());
         this.documents.push(response.data);
-        this.alertMessage = 'Document ajouté avec succès !';
+        useToast().success('Document ajouté avec succès !');
       } catch (error) {
-        this.alertMessage = error.response?.data?.error || 'Erreur lors de l\'ajout du document.';
-        console.error('Erreur:', error);
+        this.handleError(error, "l'ajout du document");
       } finally {
         this.loading = false;
       }
@@ -76,17 +101,15 @@ export const useDocumentStore = defineStore('document', {
     // Modifier un document par ID
     async editDocument(id, updatedDocument) {
       this.loading = true;
-      this.alertMessage = null;
       try {
-        const response = await axios.put(`http://localhost:3051/api/documents/${id}`, updatedDocument);
+        const response = await axios.put(`http://localhost:3051/api/documents/${id}`, updatedDocument, this.getHeaders());
         const index = this.documents.findIndex((doc) => doc.id === id);
         if (index !== -1) {
           this.documents[index] = { ...this.documents[index], ...response.data.document };
-          this.alertMessage = 'Document modifié avec succès !';
+          useToast().success('Document modifié avec succès !');
         }
       } catch (error) {
-        this.alertMessage = error.response?.data?.error || 'Erreur lors de la modification du document.';
-        console.error('Erreur:', error);
+        this.handleError(error, 'la modification du document');
       } finally {
         this.loading = false;
       }
@@ -95,14 +118,12 @@ export const useDocumentStore = defineStore('document', {
     // Supprimer un document par ID
     async deleteDocument(id) {
       this.loading = true;
-      this.alertMessage = null;
       try {
-        await axios.delete(`http://localhost:3051/api/documents/${id}`);
+        await axios.delete(`http://localhost:3051/api/documents/${id}`, this.getHeaders());
         this.documents = this.documents.filter((doc) => doc.id !== id);
-        this.alertMessage = 'Document supprimé avec succès !';
+        useToast().success('Document supprimé avec succès !');
       } catch (error) {
-        this.alertMessage = error.response?.data?.error || 'Erreur lors de la suppression du document.';
-        console.error('Erreur:', error);
+        this.handleError(error, 'la suppression du document');
       } finally {
         this.loading = false;
       }
@@ -110,25 +131,23 @@ export const useDocumentStore = defineStore('document', {
 
     // Récupérer les types de documents
     async fetchTypes() {
-      this.alertMessage = null;
       try {
-        const response = await axios.get('http://localhost:3051/api/types-document');
+        const response = await axios.get('http://localhost:3051/api/types-document', this.getHeaders());
         this.types = response.data;
+        useToast().success('Types de documents récupérés avec succès !');
       } catch (error) {
-        this.alertMessage = error.response?.data?.error || 'Erreur lors de la récupération des types de documents.';
-        console.error('Erreur:', error);
+        this.handleError(error, 'la récupération des types de documents');
       }
     },
 
     // Récupérer les statuts de documents
     async fetchStatuses() {
-      this.alertMessage = null;
       try {
-        const response = await axios.get('http://localhost:3051/api/statuts-document');
+        const response = await axios.get('http://localhost:3051/api/statuts-document', this.getHeaders());
         this.statuses = response.data;
+        useToast().success('Statuts de documents récupérés avec succès !');
       } catch (error) {
-        this.alertMessage = error.response?.data?.error || 'Erreur lors de la récupération des statuts de documents.';
-        console.error('Erreur:', error);
+        this.handleError(error, 'la récupération des statuts de documents');
       }
     },
 
@@ -144,7 +163,6 @@ export const useDocumentStore = defineStore('document', {
       });
     },
 
-    // Effacer le message d'alerte
     clearAlert() {
       this.alertMessage = null;
     },

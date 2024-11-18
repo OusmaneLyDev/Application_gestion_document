@@ -77,15 +77,17 @@
   </script>
   
   <style scoped>
+  /* Conteneur principal */
   .document-status-details-container {
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background: linear-gradient(to right, #6a11cb, #2575fc);
+    background: none;
     padding: 20px;
   }
-  
+
+  /* Carte du formulaire */
   .details-form-card {
     background-color: #fff;
     padding: 30px;
@@ -94,7 +96,8 @@
     max-width: 600px;
     width: 100%;
   }
-  
+
+  /* Titre du formulaire */
   .form-title {
     text-align: center;
     font-weight: bold;
@@ -102,31 +105,40 @@
     color: #444;
     margin-bottom: 20px;
   }
-  
+
+  /* Champs d'entrée personnalisés */
   .custom-input {
     border: 2px solid #6a11cb;
     border-radius: 8px;
+    padding: 10px;
     transition: all 0.3s ease;
+    background-color: #f0f0f0;
   }
-  
+
   .custom-input:focus {
-    border-color: #2575fc;
-    box-shadow: 0 0 8px rgba(37, 117, 252, 0.5);
+    border-color: #3498db;
+    box-shadow: 0 0 8px rgba(52, 152, 219, 0.5);
   }
-  
+
+  /* Groupe de boutons */
   .button-group {
     display: flex;
     justify-content: center;
     gap: 10px;
   }
-  
+
+  /* Boutons */
   .btn-outline-secondary {
     border: 2px solid #6c757d;
+    background-color: transparent;
+    color: #6c757d;
+    padding: 10px 20px;
+    border-radius: 8px;
+    transition: background-color 0.3s, color 0.3s;
   }
-  
+
   .btn-outline-secondary:hover {
     background-color: #6c757d;
     color: #fff;
   }
-  </style>
-  
+</style>

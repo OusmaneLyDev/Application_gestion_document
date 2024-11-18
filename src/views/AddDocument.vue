@@ -73,6 +73,17 @@
                 </select>
             </div>
 
+            <!-- Champ de fichier (facultatif) -->
+            <div class="form-group">
+                <label for="file">Fichier (facultatif)</label>
+                <input
+                    type="file"
+                    id="file"
+                    @change="handleFileChange"
+                    class="form-control"
+                />
+            </div>
+
             <div v-if="successMessage" class="alert alert-success">
                 {{ successMessage }}
             </div>
@@ -117,7 +128,7 @@ export default {
             },
             documentTypes: [],
             documentStatuses: [],
-            selectedFile: null,
+            selectedFile: null,  // Fichier sélectionné
             successMessage: '',
             errorMessage: '',
             isSubmitting: false,
@@ -144,54 +155,62 @@ export default {
                 this.errorMessage = "Erreur lors de la récupération des statuts de document.";
             }
         },
+        handleFileChange(event) {
+            this.selectedFile = event.target.files[0];  // Mise à jour du fichier sélectionné
+        },
         async submitForm() {
-    console.log('Données avant envoi :', this.document);
+            console.log('Données avant envoi :', this.document);
 
-    // Vérification des champs requis
-    if (!this.document.titre || !this.document.description || !this.document.date_depot || !this.document.id_Utilisateur || !this.document.id_TypeDocument || !this.document.id_StatutDocument) {
-        this.errorMessage = 'Tous les champs doivent être remplis.';
-        return;
-    }
+            // Vérification des champs requis
+            if (!this.document.titre || !this.document.description || !this.document.date_depot || !this.document.id_Utilisateur || !this.document.id_TypeDocument || !this.document.id_StatutDocument) {
+                this.errorMessage = 'Tous les champs doivent être remplis.';
+                return;
+            }
 
-    // Vérifiez si id_Utilisateur est vide
-    if (!this.document.id_Utilisateur) {
-        this.errorMessage = 'ID Utilisateur manquant. Veuillez vous connecter.';
-        return;
-    }
+            // Vérifiez si id_Utilisateur est vide
+            if (!this.document.id_Utilisateur) {
+                this.errorMessage = 'ID Utilisateur manquant. Veuillez vous connecter.';
+                return;
+            }
 
-    this.isSubmitting = true;
-    this.successMessage = '';
-    this.errorMessage = '';
+            this.isSubmitting = true;
+            this.successMessage = '';
+            this.errorMessage = '';
 
-    const formData = new FormData();
-    formData.append('titre', this.document.titre);
-    formData.append('description', this.document.description);
-    formData.append('date_depot', this.document.date_depot);
-    formData.append('id_Utilisateur', this.document.id_Utilisateur);
-    formData.append('id_TypeDocument', this.document.id_TypeDocument);
-    formData.append('id_StatutDocument', this.document.id_StatutDocument);
+            const formData = new FormData();
+            formData.append('titre', this.document.titre);
+            formData.append('description', this.document.description);
+            formData.append('date_depot', this.document.date_depot);
+            formData.append('id_Utilisateur', this.document.id_Utilisateur);
+            formData.append('id_TypeDocument', this.document.id_TypeDocument);
+            formData.append('id_StatutDocument', this.document.id_StatutDocument);
 
-    console.log('FormData avant envoi:', formData);
+            // Ajout du fichier si présent
+            if (this.selectedFile) {
+                formData.append('file', this.selectedFile);
+            }
 
-    try {
-        await axios.post('http://localhost:3051/api/documents', formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            },
-        });
+            console.log('FormData avant envoi:', formData);
 
-        this.successMessage = 'Document ajouté avec succès.';
-        this.resetForm();
-        setTimeout(() => {
-            this.$router.push({ name: 'Documents' });
-        }, 2000);
-    } catch (error) {
-        console.error('Erreur lors de l\'ajout du document :', error);
-        this.errorMessage = "Erreur lors de l'ajout du document.";
-    } finally {
-        this.isSubmitting = false;
-    }
-},
+            try {
+                await axios.post('http://localhost:3051/api/documents', formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                });
+
+                this.successMessage = 'Document ajouté avec succès.';
+                this.resetForm();
+                setTimeout(() => {
+                    this.$router.push({ name: 'Documents' });
+                }, 2000);
+            } catch (error) {
+                console.error('Erreur lors de l\'ajout du document :', error);
+                this.errorMessage = "Erreur lors de l'ajout du document.";
+            } finally {
+                this.isSubmitting = false;
+            }
+        },
         resetForm() {
             this.document = {
                 titre: '',
@@ -209,6 +228,7 @@ export default {
     },
 };
 </script>
+
 
 <style scoped>
 .add-document-container {

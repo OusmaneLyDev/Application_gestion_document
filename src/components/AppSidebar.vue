@@ -1,9 +1,6 @@
 <template>
     <div>
-      <!-- Bouton hamburger pour ouvrir/fermer la sidebar -->
-      <button class="menu-toggle" @click="toggleSidebar">
-        <i class="fas fa-bars"></i>
-      </button>
+      
   
       <!-- Sidebar sans arrière-plan, affichant uniquement les composants -->
       <nav

@@ -69,7 +69,7 @@
   </template>
 <script setup>
 import { computed, onMounted } from 'vue';
-import { useDocumentStore } from '@/stores/useDocumentStore';
+import { useDocumentStore } from '@/stores/UseDocumentStore';
 import { useRouter } from 'vue-router';
 
 const documentStore = useDocumentStore();

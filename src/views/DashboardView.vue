@@ -1,9 +1,9 @@
 <template>
+
     <div class="container">
       <h2 class="text-primary my-4">Dashboard</h2>
-      <div class="row g-2 justify-content-center"> <!-- Centrer les cartes -->
-        <!-- Card pour le nombre total de documents -->
-        <div class="col-md-3"> <!-- Réduit la largeur des cartes -->
+      <div class="row g-2 justify-content-center">
+        <div class="col-md-3">
           <div class="card text-white bg-primary mb-2">
             <div class="card-body">
               <h5 class="card-title">Documents</h5>
@@ -11,8 +11,7 @@
             </div>
           </div>
         </div>
-        <!-- Card pour le nombre total de types de documents -->
-        <div class="col-md-3"> <!-- Réduit la largeur des cartes -->
+        <div class="col-md-3"> 
           <div class="card text-white bg-warning mb-2">
             <div class="card-body">
               <h5 class="card-title">Types de Document</h5>
@@ -20,8 +19,7 @@
             </div>
           </div>
         </div>
-        <!-- Card pour le nombre total de statuts de documents -->
-        <div class="col-md-3"> <!-- Réduit la largeur des cartes -->
+        <div class="col-md-3">
           <div class="card text-white bg-info mb-2">
             <div class="card-body">
               <h5 class="card-title">Statuts de Document</h5>
@@ -31,13 +29,12 @@
         </div>
       </div>
   
-      <!-- Graphiques pour les types de documents et les statuts de documents -->
-      <div class="row g-2 justify-content-center"> <!-- Centrer les graphiques -->
-        <div class="col-md-5"> <!-- Réduit la largeur des graphiques -->
+      <div class="row g-2 justify-content-center"> 
+        <div class="col-md-5"> 
           <h4 class="text-primary">Évolution des Types de Documents</h4>
           <canvas id="documentTypeChart"></canvas>
         </div>
-        <div class="col-md-5"> <!-- Réduit la largeur des graphiques -->
+        <div class="col-md-5"> 
           <h4 class="text-primary">Évolution des Statuts de Documents</h4>
           <canvas id="documentStatusChart"></canvas>
         </div>
@@ -47,7 +44,6 @@
   
   <script>
   import { Chart, registerables } from 'chart.js';
-  
   export default {
     data() {
       return {

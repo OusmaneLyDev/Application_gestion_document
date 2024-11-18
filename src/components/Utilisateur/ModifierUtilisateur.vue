@@ -133,26 +133,29 @@
   </script>
   
   <style scoped>
+  /* Conteneur principal pour l'édition de l'utilisateur */
   .edit-user-container {
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background: linear-gradient(to right, #6a11cb, #2575fc);
+    background: none;
     padding: 20px;
   }
-  
+
+  /* Carte du formulaire d'édition */
   .edit-user-form-card {
     position: relative;
     background-color: #fff;
     padding: 30px;
     border-radius: 12px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
     max-width: 600px;
     width: 100%;
     animation: fadeInUp 0.5s ease-in-out;
   }
-  
+
+  /* Bouton de fermeture */
   .close-button {
     position: absolute;
     top: 10px;
@@ -160,37 +163,59 @@
     background: none;
     border: none;
     font-size: 1.2rem;
+    color: #444;
     cursor: pointer;
+    transition: color 0.3s;
   }
-  
+
+  .close-button:hover {
+    color: #e74c3c;
+  }
+
+  /* Titre */
   h2 {
     text-align: center;
     font-weight: bold;
     font-size: 1.8rem;
-    color: #444;
+    color: #333;
     margin-bottom: 20px;
   }
-  
+
+  /* Texte */
   p {
     margin-bottom: 10px;
+    color: #555;
   }
-  
+
+  /* Message d'alerte */
   .alert {
     margin-top: 20px;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #f8d7da;
+    color: #721c24;
+    text-align: center;
   }
-  
+
+  /* Bouton secondaire */
   .btn-secondary {
     margin-top: 20px;
     width: 100%;
     padding: 10px;
     background-color: #f0f0f0;
-    border: none;
+    border: 1px solid #ddd;
     border-radius: 5px;
     cursor: pointer;
     font-weight: bold;
     color: #444;
+    transition: background-color 0.3s;
   }
-  
+
+  .btn-secondary:hover {
+    background-color: #e0e0e0;
+  }
+
+  /* Bouton de confirmation */
   .btn-success {
     margin-top: 20px;
     width: 100%;
@@ -201,6 +226,22 @@
     cursor: pointer;
     font-weight: bold;
     color: #fff;
+    transition: background-color 0.3s;
   }
-  </style>
-  
+
+  .btn-success:hover {
+    background-color: #218838;
+  }
+
+  /* Animation */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>

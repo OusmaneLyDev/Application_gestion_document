@@ -82,15 +82,17 @@
   </script>
   
   <style scoped>
+  /* Conteneur principal */
   .user-details-container {
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background: linear-gradient(to right, #6a11cb, #2575fc);
+    background: none;
     padding: 20px;
   }
-  
+
+  /* Carte des détails de l'utilisateur */
   .user-details-card {
     position: relative;
     background-color: #fff;
@@ -100,7 +102,8 @@
     max-width: 500px;
     width: 100%;
   }
-  
+
+  /* Bouton de fermeture */
   .close-button {
     position: absolute;
     top: 10px;
@@ -108,7 +111,12 @@
     background: none;
     border: none;
     font-size: 1.2rem;
+    color: #444;
     cursor: pointer;
+    transition: color 0.3s;
   }
-  </style>
-  
+
+  .close-button:hover {
+    color: #e74c3c;
+  }
+</style>

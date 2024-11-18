@@ -93,7 +93,7 @@
     font-size: 1.5rem;
     color: #34495e;
   }
-  
+
   /* Animation du spinner */
   .spinner {
     border: 6px solid #f3f3f3;
@@ -103,22 +103,27 @@
     height: 60px;
     animation: spin 1s linear infinite;
   }
-  
+
   @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
   }
-  
+
   /* Style du formulaire */
   .add-document-type-container {
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background: linear-gradient(to right, #6a11cb, #2575fc);
+    /* Suppression de l'arrière-plan en dégradé */
+    background: none;
     padding: 20px;
   }
-  
+
   .add-form-card {
     background-color: #fff;
     padding: 30px;
@@ -127,7 +132,7 @@
     max-width: 600px;
     width: 100%;
   }
-  
+
   .form-title {
     text-align: center;
     font-weight: bold;
@@ -135,7 +140,7 @@
     color: #444;
     margin-bottom: 20px;
   }
-  
+
   .custom-input {
     border: 2px solid #6a11cb;
     border-radius: 8px;
@@ -143,27 +148,26 @@
     font-size: 1rem;
     background-color: #f0f0f0;
   }
-  
+
   .custom-input input,
   .custom-input textarea {
     margin: 0;
     color: #2c3e50;
     font-size: 1.1rem;
   }
-  
+
   .button-group {
     display: flex;
     justify-content: center;
     gap: 10px;
   }
-  
+
   .btn-outline-secondary {
     border: 2px solid #6c757d;
   }
-  
+
   .btn-outline-secondary:hover {
     background-color: #6c757d;
     color: #fff;
   }
-  </style>
-  
+</style>

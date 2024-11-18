@@ -10,7 +10,7 @@
         <main class="container-fluid px-4">
           <router-view />
         </main>
-        <AppFooter />
+        
       </div>
     </div>
   </div>
@@ -19,7 +19,6 @@
 <script>
 import AppNavbar from './components/AppNavbar.vue';
 import AppSidebar from './components/AppSidebar.vue';
-// import AppFooter from './components/AppFooter.vue';
 import UserNotification from './components/UserNotification.vue'; 
 import axios from 'axios'; // Importation d'axios pour les requêtes
 
@@ -28,12 +27,11 @@ export default {
   components: {
     AppNavbar,
     AppSidebar,
-    // AppFooter,
     UserNotification, 
   },
   data() {
     return {
-      sidebarVisible: true,
+      sidebarVisible: true, 
       utilisateur: null,
     };
   },
