@@ -76,7 +76,7 @@
   
   // Fonction pour retourner à la liste
   const goBack = () => {
-    router.push('/');
+    router.push('/Liste-type-document');
   };
   </script>
   

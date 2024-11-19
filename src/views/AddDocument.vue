@@ -1,233 +1,223 @@
 <template>
     <div class="add-document-container">
-        <h1 class="text-center">Ajouter un Document</h1>
-        <form @submit.prevent="submitForm" class="document-form">
-            <div class="form-group">
-                <label for="titre">Titre du Document</label>
-                <input
-                    type="text"
-                    id="titre"
-                    v-model="document.titre"
-                    required
-                    class="form-control"
-                    placeholder="Entrez le titre"
-                />
-            </div>
-
-            <div class="form-group">
-                <label for="description">Description du Document</label>
-                <textarea
-                    id="description"
-                    v-model="document.description"
-                    class="form-control"
-                    placeholder="Décrivez le document (facultatif)"
-                ></textarea>
-            </div>
-
-            <div class="form-group">
-                <label for="date_depot">Date de Dépôt</label>
-                <input
-                    type="date"
-                    id="date_depot"
-                    v-model="document.date_depot"
-                    required
-                    class="form-control"
-                />
-            </div>
-
-            <div class="form-group">
-                <label for="type">Type de Document</label>
-                <select
-                    id="type"
-                    v-model="document.id_TypeDocument"
-                    required
-                    class="form-control"
-                >
-                    <option value="" disabled>Choisissez un type</option>
-                    <option
-                        v-for="type in documentTypes"
-                        :key="type.id"
-                        :value="type.id"
-                    >
-                        {{ type.nom }}
-                    </option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="statut">Statut du Document</label>
-                <select
-                    id="statut"
-                    v-model="document.id_StatutDocument"
-                    required
-                    class="form-control"
-                >
-                    <option value="" disabled>Choisissez un statut</option>
-                    <option
-                        v-for="statut in documentStatuses"
-                        :key="statut.id"
-                        :value="statut.id"
-                    >
-                        {{ statut.nom }}
-                    </option>
-                </select>
-            </div>
-
-            <!-- Champ de fichier (facultatif) -->
-            <div class="form-group">
-                <label for="file">Fichier (facultatif)</label>
-                <input
-                    type="file"
-                    id="file"
-                    @change="handleFileChange"
-                    class="form-control"
-                />
-            </div>
-
-            <div v-if="successMessage" class="alert alert-success">
-                {{ successMessage }}
-            </div>
-            <div v-if="errorMessage" class="alert alert-danger">
-                {{ errorMessage }}
-            </div>
-
-            <div class="form-buttons">
-                <button
-                    type="submit"
-                    class="btn btn-primary"
-                    :disabled="isSubmitting"
-                >
-                    {{ isSubmitting ? 'Ajout en cours...' : 'Ajouter' }}
-                </button>
-                <button
-                    type="button"
-                    class="btn btn-secondary"
-                    @click="goBack"
-                >
-                    Annuler
-                </button>
-            </div>
-        </form>
+      <h1 class="text-center">Ajouter un Document</h1>
+      <form @submit.prevent="submitForm" class="document-form">
+        <div class="form-group">
+          <label for="titre">Titre du Document</label>
+          <input
+            type="text"
+            id="titre"
+            v-model="document.titre"
+            required
+            class="form-control"
+            placeholder="Entrez le titre"
+          />
+        </div>
+  
+        <div class="form-group">
+          <label for="description">Description du Document</label>
+          <textarea
+            id="description"
+            v-model="document.description"
+            class="form-control"
+            placeholder="Décrivez le document (facultatif)"
+          ></textarea>
+        </div>
+  
+        <div class="form-group">
+          <label for="date_depot">Date de Dépôt</label>
+          <input
+            type="date"
+            id="date_depot"
+            v-model="document.date_depot"
+            required
+            class="form-control"
+          />
+        </div>
+  
+        <div class="form-group">
+          <label for="type">Type de Document</label>
+          <select
+            id="type"
+            v-model="document.id_TypeDocument"
+            required
+            class="form-control"
+          >
+            <option value="" disabled>Choisissez un type</option>
+            <option
+              v-for="type in types"
+              :key="type.id"
+              :value="type.id"
+            >
+              {{ type.nom }}
+            </option>
+          </select>
+        </div>
+  
+        <div class="form-group">
+          <label for="statut">Statut du Document</label>
+          <select
+            id="statut"
+            v-model="document.id_StatutDocument"
+            required
+            class="form-control"
+          >
+            <option value="" disabled>Choisissez un statut</option>
+            <option
+              v-for="statut in statuses"
+              :key="statut.id"
+              :value="statut.id"
+            >
+              {{ statut.nom }}
+            </option>
+          </select>
+        </div>
+  
+        <div class="form-group">
+          <label for="file">Fichier (facultatif)</label>
+          <input
+            type="file"
+            id="file"
+            @change="handleFileChange"
+            class="form-control"
+          />
+        </div>
+  
+        <div v-if="successMessage" class="alert alert-success">
+          {{ successMessage }}
+        </div>
+        <div v-if="errorMessage" class="alert alert-danger">
+          {{ errorMessage }}
+        </div>
+  
+        <div class="form-buttons">
+          <button
+            type="submit"
+            class="btn btn-primary"
+            :disabled="isSubmitting"
+          >
+            {{ isSubmitting ? 'Ajout en cours...' : 'Ajouter' }}
+          </button>
+          <button
+            type="button"
+            class="btn btn-secondary"
+            @click="goBack"
+          >
+            Annuler
+          </button>
+        </div>
+      </form>
     </div>
-</template>
-
-<script>
-import axios from 'axios';
-
-export default {
+  </template>
+  
+  <script>
+  import { ref, computed, onMounted } from 'vue';
+  import { useRouter } from 'vue-router';
+  import { useToast } from 'vue-toastification';
+  import { useDocumentStore } from '@/stores/UseDocumentStore';
+  
+  export default {
     name: 'AddDocument',
-    data() {
-        return {
-            document: {
-                titre: '',
-                description: '',
-                date_depot: '',
-                id_Utilisateur: localStorage.getItem('userId') || '', // Récupérer l'ID de l'utilisateur connecté
-                id_TypeDocument: '',
-                id_StatutDocument: '',
-            },
-            documentTypes: [],
-            documentStatuses: [],
-            selectedFile: null,  // Fichier sélectionné
-            successMessage: '',
-            errorMessage: '',
-            isSubmitting: false,
+    setup() {
+      const documentStore = useDocumentStore();
+      const router = useRouter();
+      const toast = useToast();
+  
+      const document = ref({
+        titre: '',
+        description: '',
+        date_depot: '',
+        id_Utilisateur: localStorage.getItem('userId') || '', // Récupérer l'ID de l'utilisateur depuis localStorage
+        id_TypeDocument: '',
+        id_StatutDocument: '',
+      });
+  
+      const selectedFile = ref(null);
+      const successMessage = ref('');
+      const errorMessage = ref('');
+      const isSubmitting = ref(false);
+  
+      onMounted(() => {
+        documentStore.fetchTypes();
+        documentStore.fetchStatuses();
+      });
+  
+      const types = computed(() => documentStore.types);
+      const statuses = computed(() => documentStore.statuses);
+  
+      const handleFileChange = (event) => {
+        selectedFile.value = event.target.files[0];
+      };
+  
+      const submitForm = async () => {
+        errorMessage.value = '';
+        successMessage.value = '';
+  
+        if (!document.value.titre || !document.value.date_depot || !document.value.id_TypeDocument || !document.value.id_StatutDocument) {
+          errorMessage.value = 'Tous les champs obligatoires doivent être remplis.';
+          toast.error(errorMessage.value);
+          return;
+        }
+  
+        // Convertir la date au format ISO
+        const isoDate = new Date(document.value.date_depot).toISOString();
+        document.value.date_depot = isoDate;
+  
+        // Convertir l'ID utilisateur en entier
+        const userId = parseInt(document.value.id_Utilisateur, 10);  // Convertir l'ID utilisateur en entier
+  
+        // Créer un objet JSON pour les données du document
+        const jsonData = {
+          titre: document.value.titre,
+          description: document.value.description || '',
+          date_depot: document.value.date_depot,
+          id_Utilisateur: userId,  // Envoyer l'ID utilisateur sous forme entière
+          id_TypeDocument: parseInt(document.value.id_TypeDocument, 10), // Convertir l'ID en entier
+          id_StatutDocument: parseInt(document.value.id_StatutDocument, 10), // Convertir l'ID en entier
         };
+  
+        // Si un fichier est sélectionné, ajouter les informations du fichier
+        if (selectedFile.value) {
+          jsonData.file = selectedFile.value;
+        }
+  
+        try {
+          isSubmitting.value = true;
+          await documentStore.addDocument(jsonData); // Passer l'objet JSON au lieu de FormData
+          successMessage.value = 'Document ajouté avec succès.';
+          toast.success(successMessage.value);
+  
+          setTimeout(() => {
+            router.push({ name: 'DocumentsView' });
+          }, 2000);
+        } catch (error) {
+          errorMessage.value = 'Erreur lors de l\'ajout du document.';
+          toast.error(errorMessage.value);
+          console.error('Erreur API :', error);
+        } finally {
+          isSubmitting.value = false;
+        }
+      };
+  
+      const goBack = () => {
+        router.push({ name: 'DocumentsView' });
+      };
+  
+      return {
+        document,
+        types,
+        statuses,
+        handleFileChange,
+        submitForm,
+        successMessage,
+        errorMessage,
+        isSubmitting,
+        goBack,
+      };
     },
-    created() {
-        this.fetchDocumentTypes();
-        this.fetchDocumentStatuses();
-    },
-    methods: {
-        async fetchDocumentTypes() {
-            try {
-                const response = await axios.get('http://localhost:3051/api/types-document');
-                this.documentTypes = response.data;
-            } catch (error) {
-                this.errorMessage = "Erreur lors de la récupération des types de document.";
-            }
-        },
-        async fetchDocumentStatuses() {
-            try {
-                const response = await axios.get('http://localhost:3051/api/statuts-document');
-                this.documentStatuses = response.data;
-            } catch (error) {
-                this.errorMessage = "Erreur lors de la récupération des statuts de document.";
-            }
-        },
-        handleFileChange(event) {
-            this.selectedFile = event.target.files[0];  // Mise à jour du fichier sélectionné
-        },
-        async submitForm() {
-            console.log('Données avant envoi :', this.document);
-
-            // Vérification des champs requis
-            if (!this.document.titre || !this.document.description || !this.document.date_depot || !this.document.id_Utilisateur || !this.document.id_TypeDocument || !this.document.id_StatutDocument) {
-                this.errorMessage = 'Tous les champs doivent être remplis.';
-                return;
-            }
-
-            // Vérifiez si id_Utilisateur est vide
-            if (!this.document.id_Utilisateur) {
-                this.errorMessage = 'ID Utilisateur manquant. Veuillez vous connecter.';
-                return;
-            }
-
-            this.isSubmitting = true;
-            this.successMessage = '';
-            this.errorMessage = '';
-
-            const formData = new FormData();
-            formData.append('titre', this.document.titre);
-            formData.append('description', this.document.description);
-            formData.append('date_depot', this.document.date_depot);
-            formData.append('id_Utilisateur', this.document.id_Utilisateur);
-            formData.append('id_TypeDocument', this.document.id_TypeDocument);
-            formData.append('id_StatutDocument', this.document.id_StatutDocument);
-
-            // Ajout du fichier si présent
-            if (this.selectedFile) {
-                formData.append('file', this.selectedFile);
-            }
-
-            console.log('FormData avant envoi:', formData);
-
-            try {
-                await axios.post('http://localhost:3051/api/documents', formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
-                    },
-                });
-
-                this.successMessage = 'Document ajouté avec succès.';
-                this.resetForm();
-                setTimeout(() => {
-                    this.$router.push({ name: 'Documents' });
-                }, 2000);
-            } catch (error) {
-                console.error('Erreur lors de l\'ajout du document :', error);
-                this.errorMessage = "Erreur lors de l'ajout du document.";
-            } finally {
-                this.isSubmitting = false;
-            }
-        },
-        resetForm() {
-            this.document = {
-                titre: '',
-                description: '',
-                date_depot: '',
-                id_Utilisateur: localStorage.getItem('userId') || '',
-                id_TypeDocument: '',
-                id_StatutDocument: '',
-            };
-            this.selectedFile = null;
-        },
-        goBack() {
-            this.$router.push({ name: 'Documents' });
-        },
-    },
-};
-</script>
+  };
+  </script>
+  
 
 
 <style scoped>

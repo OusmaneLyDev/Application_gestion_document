@@ -111,7 +111,7 @@
   };
   
   const goBack = () => {
-    router.push('/');
+    router.push('/Utilisateurs');
   };
   </script>
   

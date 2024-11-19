@@ -54,7 +54,7 @@
           <p>{{ document.statutDocument.nom }} - {{ document.statutDocument.description }}</p>
         </div>
   
-        <button class="btn btn-secondary" @click="goBack">Retour</button>
+        <button class="btn btn-secondary" @click="goBack">Fermer</button>
       </div>
     </div>
   </template>

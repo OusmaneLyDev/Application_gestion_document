@@ -98,7 +98,7 @@ const routes = [
     path: '/edit/:id',
     name: 'EditDocument',
     component: EditDocument,
-    meta: { requiresAuth: true },
+    // meta: { requiresAuth: true },
     props: true, 
   },
   {

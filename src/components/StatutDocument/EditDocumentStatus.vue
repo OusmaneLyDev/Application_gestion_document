@@ -47,56 +47,57 @@
   import { useDocumentStatusStore } from '@/stores/documentStatusStore';
   
   export default {
-    name: 'EditDocumentStatus',
-    setup() {
-      const route = useRoute();
-      const router = useRouter();
-      const documentStatusStore = useDocumentStatusStore();
-  
-      const statutDocument = ref({
-        id: null,
-        nom: '',
-        description: ''
-      });
-  
-      const errorMessage = ref('');
-  
-      // Récupérer le statut document à modifier
-      const fetchStatutDocument = async () => {
-        const statutId = route.params.id;
-        try {
-          const status = await documentStatusStore.getStatutDocumentById(statutId);
-          statutDocument.value = status;
-        } catch (error) {
-          errorMessage.value = 'Erreur lors du chargement des détails du statut du document';
-        }
-      };
-  
-      // Mettre à jour les informations du statut
-      const updateStatutDocument = async () => {
-        try {
-          await documentStatusStore.updateStatutDocument(statutDocument.value);
-          router.push({ name: 'DocumentStatusList' });
-        } catch (error) {
-          errorMessage.value = 'Erreur lors de la mise à jour du statut du document';
-        }
-      };
-  
-      // Revenir à la liste des statuts de documents
-      const goBack = () => {
+  name: 'EditDocumentStatus',
+  setup() {
+    const route = useRoute();
+    const router = useRouter();
+    const documentStatusStore = useDocumentStatusStore();
+
+    const statutDocument = ref({
+      id: null,
+      nom: '',
+      description: ''
+    });
+
+    const errorMessage = ref('');
+
+    // Récupérer le statut document à modifier
+    const fetchStatutDocument = async () => {
+      const statutId = route.params.id;
+      try {
+        const status = await documentStatusStore.getStatutDocumentById(statutId);
+        statutDocument.value = status;
+      } catch (error) {
+        errorMessage.value = 'Erreur lors du chargement des détails du statut du document';
+      }
+    };
+
+    // Mettre à jour les informations du statut
+    const updateStatutDocument = async () => {
+      try {
+        await documentStatusStore.modifierStatut(statutDocument.value.id, statutDocument.value);
         router.push({ name: 'StatutDocument' });
-      };
-  
-      onMounted(fetchStatutDocument);
-  
-      return {
-        statutDocument,
-        errorMessage,
-        updateStatutDocument,
-        goBack
-      };
-    }
-  };
+      } catch (error) {
+        errorMessage.value = documentStatusStore.errorMessage || 'Erreur lors de la mise à jour du statut du document';
+      }
+    };
+
+    // Revenir à la liste des statuts de documents
+    const goBack = () => {
+      router.push({ name: 'StatutDocument' });
+    };
+
+    onMounted(fetchStatutDocument);
+
+    return {
+      statutDocument,
+      errorMessage,
+      updateStatutDocument,
+      goBack
+    };
+  }
+};
+
   </script>
   
   

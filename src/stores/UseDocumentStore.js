@@ -71,32 +71,53 @@ export const useDocumentStore = defineStore('document', {
       }
     },
 
-    // Ajouter un nouveau document
-    async addDocument(document) {
-      this.loading = true;
-      try {
-        const { titre, description, date_depot, id_Utilisateur, id_TypeDocument, id_StatutDocument } = document;
-        if (!titre || !id_Utilisateur || !id_TypeDocument || !id_StatutDocument || !date_depot) {
-          this.alertMessage = 'Tous les champs obligatoires doivent être renseignés.';
-          useToast().error(this.alertMessage);
-          return;
-        }
-        const response = await axios.post('http://localhost:3051/api/documents', {
-          titre,
-          description,
-          date_depot,
-          id_Utilisateur,
-          id_TypeDocument,
-          id_StatutDocument,
-        }, this.getHeaders());
-        this.documents.push(response.data);
-        useToast().success('Document ajouté avec succès !');
-      } catch (error) {
-        this.handleError(error, "l'ajout du document");
-      } finally {
-        this.loading = false;
-      }
-    },
+async addDocument(document) {
+  this.loading = true;
+  console.log('Début de l\'ajout du document:', document);
+
+  try {
+    const { titre, description, date_depot, id_TypeDocument, id_StatutDocument } = document;
+
+    // Validation des champs obligatoires
+    if (!titre || !id_TypeDocument || !id_StatutDocument || !date_depot) {
+      this.alertMessage = 'Tous les champs obligatoires doivent être renseignés.';
+      useToast().error(this.alertMessage);
+      console.error('Erreur: Champs obligatoires manquants', {
+        titre, 
+        id_TypeDocument, 
+        id_StatutDocument, 
+        date_depot
+      });
+      return;
+    }
+
+    // Requête d'ajout du document
+    console.log('Envoi de la requête POST pour ajouter le document...');
+    const response = await axios.post('http://localhost:3051/api/documents', {
+      titre,
+      description,
+      date_depot,
+      id_TypeDocument,
+      id_StatutDocument,
+    }, this.getHeaders());
+    
+    console.log('Réponse du serveur après ajout du document:', response.data);
+
+    // Ajout du document à la liste locale
+    this.documents.push(response.data);
+
+    useToast().success('Document ajouté avec succès !');
+    console.log('Document ajouté avec succès:', response.data);
+
+  } catch (error) {
+    console.error('Erreur lors de l\'ajout du document:', error);
+    this.handleError(error, "l'ajout du document");
+  } finally {
+    this.loading = false;
+    console.log('Fin du processus d\'ajout du document');
+  }
+},
+
 
     // Modifier un document par ID
     async editDocument(id, updatedDocument) {

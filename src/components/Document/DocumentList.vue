@@ -1,72 +1,79 @@
 <template>
-    <div class="document-list">
-      <div v-if="loading">Chargement...</div>
-      <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
-      <div v-if="alertMessage" class="alert alert-info" role="alert">
-        {{ alertMessage }}
-      </div>
-  
-      <div v-else>
-        <!-- Bouton pour ajouter un document -->
-        <div class="mb-3">
-          <button class="btn btn-primary" @click="addDocument">
-            <i class="fas fa-plus-circle"></i> Ajouter un Document
-          </button>
-        </div>
-  
-        <!-- Tableau des documents -->
-        <table class="table table-hover">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Titre</th>
-              <th>Description</th>
-              <th>Date de Dépôt</th>
-              <th>Type de Document</th>
-              <th>Statut du Document</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="document in documents" :key="document.id">
-              <td>{{ document.id }}</td>
-              <td>{{ document.titre }}</td>
-              <td>{{ document.description }}</td>
-              <td>{{ formatDate(document.date_depot) }}</td>
-              <td>{{ document.typeDocument.nom }}</td>
-              <td>{{ document.statutDocument.nom }}</td>
-              <td>
-                <router-link 
-                  :to="{ name: 'EditDocument', params: { id: document.id } }" 
-                  title="Modifier"
-                >
-                  <i class="fas fa-edit text-warning action-icon"></i>
-                </router-link>
-                <router-link 
-                  :to="{ name: 'DocumentDetails', params: { id: document.id } }" 
-                  title="Voir"
-                >
-                  <i class="fas fa-eye text-info action-icon"></i>
-                </router-link>
-  
-                <!-- Bouton pour supprimer le document -->
-                <button 
-                  class="delete-button" 
-                  @click="deleteDocument(document.id)" 
-                  title="Supprimer"
-                >
-                  <i class="fas fa-trash-alt"></i>
-                </button>
-              </td>
-            </tr>
-            <tr v-if="documents.length === 0">
-              <td colspan="7" class="text-center">Aucun document trouvé</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+  <div class="document-list">
+    <div v-if="loading">Chargement...</div>
+    <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
+    <div v-if="alertMessage" class="alert alert-info" role="alert">
+      {{ alertMessage }}
     </div>
-  </template>
+
+    <div v-else>
+      <!-- Bouton pour ajouter un document -->
+      <div class="mb-3">
+        <button class="btn btn-primary" @click="addDocument">
+          <i class="fas fa-plus-circle"></i> Ajouter un Document
+        </button>
+      </div>
+
+      <!-- Tableau des documents -->
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Titre</th>
+            <th>Description</th>
+            <th>Date de Dépôt</th>
+            <th>Type de Document</th>
+            <th>Statut du Document</th>
+            <th>Fichier</th> <!-- Nouvelle colonne -->
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="document in documents" :key="document.id">
+            <td>{{ document.id }}</td>
+            <td>{{ document.titre }}</td>
+            <td>{{ document.description }}</td>
+            <td>{{ formatDate(document.date_depot) }}</td>
+            <td>{{ document.typeDocument.nom }}</td>
+            <td>{{ document.statutDocument.nom }}</td>
+            <td>
+              <a v-if="document.fichier" :href="`/uploads/${document.fichier}`" target="_blank">
+                Télécharger
+              </a>
+            </td>
+            <td>
+              <router-link 
+                :to="{ name: 'EditDocument', params: { id: document.id } }" 
+                title="Modifier"
+              >
+                <i class="fas fa-edit text-warning action-icon"></i>
+              </router-link>
+              <router-link 
+                :to="{ name: 'DocumentDetails', params: { id: document.id } }" 
+                title="Voir"
+              >
+                <i class="fas fa-eye text-info action-icon"></i>
+              </router-link>
+
+              <!-- Bouton pour supprimer le document -->
+              <button 
+                class="delete-button" 
+                @click="deleteDocument(document.id)" 
+                title="Supprimer"
+              >
+                <i class="fas fa-trash-alt"></i>
+              </button>
+            </td>
+          </tr>
+          <tr v-if="documents.length === 0">
+            <td colspan="8" class="text-center">Aucun document trouvé</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</template>
+
 <script setup>
 import { computed, onMounted } from 'vue';
 import { useDocumentStore } from '@/stores/UseDocumentStore';
@@ -111,6 +118,7 @@ const deleteDocument = async (id) => {
   }
 };
 </script>
+
 <style scoped>
 .document-list {
   width: 100%;
@@ -118,7 +126,7 @@ const deleteDocument = async (id) => {
 }
 
 .table {
-  width: 120%;
+  width: 130%;
   border-collapse: collapse;
 }
 
@@ -130,7 +138,7 @@ const deleteDocument = async (id) => {
   padding: 12px;
 }
 
-.table th:nth-child(7), .table td:nth-child(7) {
+.table th:nth-child(8), .table td:nth-child(7) {
   width: 140px;
 }
 

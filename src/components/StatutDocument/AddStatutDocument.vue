@@ -74,7 +74,7 @@
   };
   
   const goBack = () => {
-    router.push('/');
+    router.push('/statut-document');
   };
   </script>
   
