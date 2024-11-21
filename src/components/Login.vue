@@ -4,11 +4,16 @@
       <main>
         <div class="container">
           <div class="row justify-content-center">
-            <!-- Ajout de 'col-lg-6' pour augmenter la largeur de la carte -->
             <div class="col-lg-6 col-md-8">
               <div class="card shadow-lg border-0 rounded-lg mt-5">
-                <div class="card-header">
-                  <h3 class="text-center font-weight-light my-4">Connexion</h3>
+                <div class="card-header text-center">
+                  <img 
+                    src="https://via.placeholder.com/150" 
+                    alt="Utilisateur" 
+                    class="user-avatar rounded-circle mb-3"
+                  />
+                  <h3 class="text-center font-weight-light my-3">Bienvenue !</h3>
+                  <p class="text-muted small">Connectez-vous pour continuer</p>
                 </div>
                 <div class="card-body">
                   <form @submit.prevent="handleLogin">
@@ -24,16 +29,24 @@
                       <label for="inputEmail">Adresse e-mail</label>
                     </div>
 
-                    <div class="form-floating mb-3">
+                    <div class="form-floating mb-3 position-relative">
                       <input
+                        :type="showPassword ? 'text' : 'password'"
                         class="form-control"
                         id="inputPassword"
-                        type="password"
                         v-model="password"
                         placeholder="Mot de passe"
                         required
                       />
                       <label for="inputPassword">Mot de passe</label>
+                      <!-- Bouton pour afficher/masquer le mot de passe -->
+                      <button 
+                        type="button" 
+                        class="btn btn-toggle-password"
+                        @click="togglePasswordVisibility"
+                      >
+                        <i :class="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+                      </button>
                     </div>
 
                     <div class="form-check mb-3">
@@ -47,11 +60,11 @@
                       </label>
                     </div>
 
-                    <div class="d-flex align-items-center justify-content-between mt-4 mb-0">
-                      <a class="small" href="/forgot-password">Mot de passe oublié ?</a>
-                      <button type="submit" class="btn btn-primary">Se connecter</button>
-                    </div>
+                    <button type="submit" class="btn btn-primary btn-login">
+                      Se connecter
+                    </button>
                   </form>
+                  <p v-if="errorMessage" class="text-danger mt-3">{{ errorMessage }}</p>
                 </div>
                 <div class="card-footer text-center py-3">
                   <div class="small">
@@ -74,6 +87,7 @@ import { useAuthStore } from "@/stores/AuthStore";
 const email = ref("");
 const password = ref("");
 const errorMessage = ref("");
+const showPassword = ref(false);
 
 const authStore = useAuthStore();
 
@@ -92,17 +106,25 @@ const handleLogin = async () => {
     console.error("Erreur capturée :", error);
   }
 };
+
+const togglePasswordVisibility = () => {
+  showPassword.value = !showPassword.value;
+};
 </script>
 
 <style scoped>
-/* Ajuster la largeur et le style de la carte */
-.col-lg-6 {
-  max-width: 700px;
+/* Avatar utilisateur */
+.user-avatar {
+  width: 100px;
+  height: 100px;
+  border: 3px solid #007bff;
+  object-fit: cover;
 }
 
+/* Carte de connexion */
 .card {
-  border-radius: 12px;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  border-radius: 15px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
 }
 
 /* Titre */
@@ -114,27 +136,41 @@ const handleLogin = async () => {
 
 /* Champs de formulaire */
 .form-floating input {
-  border-radius: 8px;
-  padding: 10px;
+  border-radius: 10px;
+  padding: 12px;
   font-size: 1rem;
 }
 
-/* Bouton de connexion */
-.btn {
-  width: 100%;
-  padding: 10px;
-  border-radius: 8px;
-  font-weight: bold;
+/* Bouton pour afficher/masquer le mot de passe */
+.btn-toggle-password {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #6c757d;
+  font-size: 1.2rem;
+  cursor: pointer;
 }
 
-.btn-primary {
+.btn-toggle-password:hover {
+  color: #007bff;
+}
+
+/* Bouton de connexion */
+.btn-login {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  font-weight: bold;
   background-color: #007bff;
-  color: #fff;
   border: none;
 }
 
-.btn-primary:hover {
+.btn-login:hover {
   background-color: #0056b3;
+  transition: background-color 0.3s ease;
 }
 
 /* Lien de texte */
@@ -148,8 +184,9 @@ const handleLogin = async () => {
 }
 
 /* Message d'erreur */
-.error-message {
+.text-danger {
   color: red;
+  font-size: 0.9rem;
   margin-top: 10px;
 }
 </style>

@@ -7,7 +7,6 @@
     </div>
 
     <div v-else>
-      <!-- Bouton pour ajouter un document -->
       <div class="mb-3">
         <button class="btn btn-primary" @click="addDocument">
           <i class="fas fa-plus-circle"></i> Ajouter un Document
@@ -37,7 +36,7 @@
             <td>{{ document.typeDocument.nom }}</td>
             <td>{{ document.statutDocument.nom }}</td>
             <td>
-              <a v-if="document.fichier" :href="`/uploads/${document.fichier}`" target="_blank">
+              <a v-if="document.fichier" :href="`²  /uploads/${document.fichier}`" target="_blank">
                 Télécharger
               </a>
             </td>
@@ -91,7 +90,6 @@ const errorMessage = computed(() => documentStore.errorMessage);
 const loading = computed(() => documentStore.loading);
 const alertMessage = computed(() => documentStore.alertMessage);
 
-// Fonction pour formater la date
 const formatDate = (dateString) => {
   const date = new Date(dateString);
   return date.toLocaleDateString('fr-FR', {
@@ -101,7 +99,6 @@ const formatDate = (dateString) => {
   });
 };
 
-// Fonction pour ajouter un document
 const addDocument = () => {
   router.push({ name: 'AddDocument' });
 };

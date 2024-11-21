@@ -127,7 +127,7 @@
         titre: '',
         description: '',
         date_depot: '',
-        id_Utilisateur: localStorage.getItem('userId') || '', // Récupérer l'ID de l'utilisateur depuis localStorage
+        id_Utilisateur: localStorage.getItem('userId') || '', 
         id_TypeDocument: '',
         id_StatutDocument: '',
       });
@@ -159,34 +159,30 @@
           return;
         }
   
-        // Convertir la date au format ISO
         const isoDate = new Date(document.value.date_depot).toISOString();
         document.value.date_depot = isoDate;
   
-        // Convertir l'ID utilisateur en entier
-        const userId = parseInt(document.value.id_Utilisateur, 10);  // Convertir l'ID utilisateur en entier
+        const userId = parseInt(document.value.id_Utilisateur,);  
   
-        // Créer un objet JSON pour les données du document
         const jsonData = {
           titre: document.value.titre,
           description: document.value.description || '',
           date_depot: document.value.date_depot,
-          id_Utilisateur: userId,  // Envoyer l'ID utilisateur sous forme entière
-          id_TypeDocument: parseInt(document.value.id_TypeDocument, 10), // Convertir l'ID en entier
-          id_StatutDocument: parseInt(document.value.id_StatutDocument, 10), // Convertir l'ID en entier
+          id_Utilisateur: userId,  
+          id_TypeDocument: parseInt(document.value.id_TypeDocument,),
+          id_StatutDocument: parseInt(document.value.id_StatutDocument,), 
         };
   
-        // Si un fichier est sélectionné, ajouter les informations du fichier
         if (selectedFile.value) {
           jsonData.file = selectedFile.value;
         }
   
         try {
           isSubmitting.value = true;
-          await documentStore.addDocument(jsonData); // Passer l'objet JSON au lieu de FormData
+          await documentStore.addDocument(jsonData); 
           successMessage.value = 'Document ajouté avec succès.';
           toast.success(successMessage.value);
-  
+          isSubmitting.value = false;
           setTimeout(() => {
             router.push({ name: 'DocumentsView' });
           }, 2000);

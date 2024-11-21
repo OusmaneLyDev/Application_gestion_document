@@ -24,7 +24,6 @@
       const userStore = useUserStore();
       const router = useRouter();
   
-      // Charger les utilisateurs au montage du composant
       onMounted(() => {
         userStore.fetchUsers();
       });
