@@ -51,7 +51,6 @@
         description: ''
       });
   
-      // Récupérer les données du statut document via son id
       const fetchDocumentStatus = async () => {
         const statutId = route.params.id;
         try {

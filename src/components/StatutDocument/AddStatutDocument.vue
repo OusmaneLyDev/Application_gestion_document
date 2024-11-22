@@ -56,7 +56,6 @@
   const loading = ref(true);
   
   onMounted(() => {
-    // Simuler un chargement pour l'ouverture de la fenêtre
     setTimeout(() => {
       loading.value = false;
     }, 1000);
@@ -66,7 +65,7 @@
     try {
       await documentStatusStore.ajouterStatut(statut.value);
       alert('Statut ajouté avec succès !');
-      router.push('/');
+      router.push('/statut-document');
     } catch (error) {
       console.error('Erreur lors de l\'ajout du statut :', error);
       alert('Erreur lors de l\'ajout du statut.');
