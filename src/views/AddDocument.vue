@@ -150,50 +150,50 @@
       };
   
       const submitForm = async () => {
-        errorMessage.value = '';
-        successMessage.value = '';
-  
-        if (!document.value.titre || !document.value.date_depot || !document.value.id_TypeDocument || !document.value.id_StatutDocument) {
-          errorMessage.value = 'Tous les champs obligatoires doivent être remplis.';
-          toast.error(errorMessage.value);
-          return;
-        }
-  
-        const isoDate = new Date(document.value.date_depot).toISOString();
-        document.value.date_depot = isoDate;
-  
-        const userId = parseInt(document.value.id_Utilisateur,);  
-  
-        const jsonData = {
-          titre: document.value.titre,
-          description: document.value.description || '',
-          date_depot: document.value.date_depot,
-          id_Utilisateur: userId,  
-          id_TypeDocument: parseInt(document.value.id_TypeDocument,),
-          id_StatutDocument: parseInt(document.value.id_StatutDocument,), 
-        };
-  
-        if (selectedFile.value) {
-          jsonData.file = selectedFile.value;
-        }
-  
-        try {
-          isSubmitting.value = true;
-          await documentStore.addDocument(jsonData); 
-          successMessage.value = 'Document ajouté avec succès.';
-          toast.success(successMessage.value);
-          isSubmitting.value = false;
-          setTimeout(() => {
-            router.push({ name: 'DocumentsView' });
-          }, 2000);
-        } catch (error) {
-          errorMessage.value = 'Erreur lors de l\'ajout du document.';
-          toast.error(errorMessage.value);
-          console.error('Erreur API :', error);
-        } finally {
-          isSubmitting.value = false;
-        }
-      };
+  errorMessage.value = '';
+  successMessage.value = '';
+
+  if (!document.value.titre || !document.value.date_depot || !document.value.id_TypeDocument || !document.value.id_StatutDocument) {
+    errorMessage.value = 'Tous les champs obligatoires doivent être remplis.';
+    toast.error(errorMessage.value);
+    return;
+  }
+
+  const isoDate = new Date(document.value.date_depot).toISOString();
+  document.value.date_depot = isoDate;
+
+  const userId = parseInt(document.value.id_Utilisateur);
+
+  const formData = new FormData();
+  formData.append('titre', document.value.titre);
+  formData.append('description', document.value.description || '');
+  formData.append('date_depot', document.value.date_depot);
+  formData.append('id_Utilisateur', userId);
+  formData.append('id_TypeDocument', parseInt(document.value.id_TypeDocument));
+  formData.append('id_StatutDocument', parseInt(document.value.id_StatutDocument));
+
+  if (selectedFile.value) {
+    formData.append('file', selectedFile.value);
+  }
+
+  try {
+    isSubmitting.value = true;
+    await documentStore.addDocument(formData); // Ajoutez la gestion du FormData ici
+    successMessage.value = 'Document ajouté avec succès.';
+    toast.success(successMessage.value);
+    isSubmitting.value = false;
+    setTimeout(() => {
+      router.push({ name: 'DocumentsView' });
+    }, 2000);
+  } catch (error) {
+    errorMessage.value = 'Erreur lors de l\'ajout du document.';
+    toast.error(errorMessage.value);
+    console.error('Erreur API :', error);
+  } finally {
+    isSubmitting.value = false;
+  }
+};
+
   
       const goBack = () => {
         router.push({ name: 'DocumentsView' });

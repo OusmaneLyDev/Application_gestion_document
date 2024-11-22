@@ -51,25 +51,22 @@ export const useDocumentStore = defineStore('document', {
       }
     },
 
-    async addDocument(document) {
+    async addDocument(documentData) {
       this.loading = true;
       try {
-        const { titre, description, date_depot, id_TypeDocument, id_StatutDocument } = document;
-
-        if (!titre || !id_TypeDocument || !id_StatutDocument || !date_depot) {
-          this.alertMessage = 'Tous les champs obligatoires doivent être renseignés.';
-          useToast().error(this.alertMessage);
-          return;
-        }
-
         const response = await axios.post(
           'http://localhost:3051/api/documents',
-          { titre, description, date_depot, id_TypeDocument, id_StatutDocument },
-          this.getHeaders()
+          documentData,  // FormData est passé directement ici
+          {
+            headers: {
+              ...this.getHeaders().headers,
+              'Content-Type': 'multipart/form-data',  // Indiquer que c'est un FormData
+            },
+          }
         );
-
+    
         this.fetchDocuments();  
-
+    
         useToast().success('Document ajouté avec succès !');
         console.log('Document ajouté :', response.data);
       } catch (error) {
