@@ -1,54 +1,48 @@
 <template>
-    <div>
-      
-  
-      <!-- Sidebar sans arrière-plan, affichant uniquement les composants -->
-      <nav
-        :class="['sb-sidenav', { 'sidebar-collapsed': !isSidebarOpen }]"
-        id="sidenavAccordion"
-      >
-        <div class="sb-sidenav-menu">
-          <div class="nav">
-            <!-- Bouton "Menu" placé sous le bouton hamburger -->
-            <a class="nav-link menu-btn" href="/homepage">
-              <div class="sb-nav-link-icon"><i class="fas fa-home"></i></div>
-              <span v-if="isSidebarOpen">Menu</span>
-            </a>
-  
-            <!-- Lien vers le Dashboard -->
-            <a class="nav-link" href="/dashboard">
-              <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-              <span v-if="isSidebarOpen">Dashboard</span>
-            </a>
-  
-            <!-- Lien vers la gestion des utilisateurs -->
-            <a class="nav-link" href="/utilisateurs">
-              <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
-              <span v-if="isSidebarOpen">Utilisateurs</span>
-            </a>
-  
-            <!-- Lien vers la gestion des types de documents -->
-            <a class="nav-link" href="/Liste-type-document">
-              <div class="sb-nav-link-icon"><i class="fas fa-file-alt"></i></div>
-              <span v-if="isSidebarOpen">Types de Document</span>
-            </a>
-  
-            <!-- Lien vers la gestion des statuts de documents -->
-            <a class="nav-link" href="/statut-document">
-              <div class="sb-nav-link-icon"><i class="fas fa-check-circle"></i></div>
-              <span v-if="isSidebarOpen">Statuts de Document</span>
-            </a>
-  
-            <!-- Lien vers la gestion des documents -->
-            <a class="nav-link" href="/documents">
-              <div class="sb-nav-link-icon"><i class="fas fa-file-alt"></i></div>
-              <span v-if="isSidebarOpen">Documents</span>
-            </a>
-          </div>
+  <div>
+    <nav
+      :class="['sb-sidenav', { 'sidebar-collapsed': !isSidebarOpen }]"
+      id="sidenavAccordion"
+    >
+      <div class="sb-sidenav-menu">
+        <div class="nav">
+
+          <router-link class="nav-link menu-btn" to="/">
+            <div class="sb-nav-link-icon"><i class="fas fa-home"></i></div>
+            <span v-if="isSidebarOpen">Menu</span>
+          </router-link>
+
+          <router-link class="nav-link" to="/dashboard">
+            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+            <span v-if="isSidebarOpen">Dashboard</span>
+          </router-link>
+
+          <router-link class="nav-link" to="/utilisateurs">
+            <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
+            <span v-if="isSidebarOpen">Utilisateurs</span>
+          </router-link>
+
+          <router-link class="nav-link" to="/liste-type-document">
+            <div class="sb-nav-link-icon"><i class="fas fa-file-alt"></i></div>
+            <span v-if="isSidebarOpen">Types de Document</span>
+          </router-link>
+
+          <router-link class="nav-link" to="/statut-document">
+            <div class="sb-nav-link-icon"><i class="fas fa-check-circle"></i></div>
+            <span v-if="isSidebarOpen">Statuts de Document</span>
+          </router-link>
+
+          <router-link class="nav-link" to="/documents">
+            <div class="sb-nav-link-icon"><i class="fas fa-file-alt"></i></div>
+            <span v-if="isSidebarOpen">Documents</span>
+          </router-link>
+
         </div>
-      </nav>
-    </div>
-  </template>
+      </div>
+    </nav>
+  </div>
+</template>
+
   
   <script>
   export default {
