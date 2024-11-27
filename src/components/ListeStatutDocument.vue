@@ -1,61 +1,65 @@
 <template>
-    <div class="container">
-        <h1 class="center-text">Liste des statuts de Document</h1>
-      <button @click="goToAddStatut" class="add-statut-btn">
-        <i class="fas fa-plus"></i> Ajouter un statut
-      </button>
-      <div class="statut-list">
-        <table class="table table-hover">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Nom</th>
-              <th>Description</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="statut in statuts" :key="statut.id">
-              <td>{{ statut.id }}</td>
-              <td>{{ statut.nom }}</td>
-              <td>{{ statut.description }}</td>
-              <td>
-                <!-- Lien pour voir le statut -->
-                <router-link 
-                  :to="{ name: 'DocumentStatusDetails', params: { id: statut.id } }" 
-                  title="Voir"
-                >
-                  <i class="fas fa-eye text-info action-icon"></i>
-                </router-link>
-                
-                <!-- Lien pour modifier le statut -->
-                <router-link 
-                  :to="{ name: 'EditDocumentStatus', params: { id: statut.id } }" 
-                  title="Modifier"
-                >
-                  <i class="fas fa-edit text-warning action-icon"></i>
-                </router-link>
-  
-                <!-- Bouton pour supprimer le statut -->
-                <!-- Bouton pour supprimer le statut -->
-                <button 
+  <div class="document-list">
+    <div v-if="loading">Chargement...</div>
+    <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
+    <div v-if="alertMessage" class="alert alert-info" role="alert">
+      {{ alertMessage }}
+    </div>
+
+    <div v-else>
+      <div class="mb-3 d-flex justify-content-between">
+        <h4>Liste des Statuts de Documents</h4>
+        <button class="btn btn-primary" @click="goToAddStatut">
+          <i class="fas fa-plus"></i> Ajouter
+        </button>
+      </div>
+
+      <!-- Tableau des statuts -->
+      <table class="table table-striped table-bordered">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nom</th>
+            <th>Description</th>
+            <th class="actions-column">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="statut in statuts" :key="statut.id">
+            <td>{{ statut.id }}</td>
+            <td>{{ statut.nom }}</td>
+            <td>{{ statut.description }}</td>
+            <td>
+              <router-link 
+                :to="{ name: 'EditDocumentStatus', params: { id: statut.id } }" 
+                title="Modifier"
+              >
+                <i class="fas fa-edit text-warning action-icon"></i>
+              </router-link>
+              <router-link 
+                :to="{ name: 'DocumentStatusDetails', params: { id: statut.id } }" 
+                title="Voir"
+              >
+                <i class="fas fa-eye text-info action-icon"></i>
+              </router-link>
+              <button 
                 class="delete-button" 
                 @click="deleteStatut(statut.id)" 
                 title="Supprimer"
-                >
-                <i class="fas fa-trash-alt"></i>
-                </button>
-
-              </td>
-            </tr>
-            <tr v-if="statuts.length === 0">
-              <td colspan="4" class="text-center">Aucun statut trouvé</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+              >
+                <i class="fas fa-trash-alt text-danger"></i>
+              </button>
+            </td>
+          </tr>
+          <tr v-if="statuts.length === 0">
+            <td colspan="4" class="text-center">Aucun statut trouvé</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-  </template>
+  </div>
+</template>
+
   
   <script>
   import { ref, computed, onMounted } from 'vue';
@@ -98,86 +102,75 @@
   </script>
   
   <style scoped>
-  .container {
-    max-width: 900px;
-    margin: auto;
-    padding: 20px;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  .statut-list {
-    width: 120%;
-    margin-top: 20px;
-  }
-  
-  .table {
-    border: none;
-  }
-  
-  .table th {
-    background-color: transparent;
-    color: #333;
-    padding: 12px;
-    text-align: left;
-  }
-  
-  .table td,
-  .table th {
-    padding: 12px;
-  }
-  .center-text { text-align: center; }
+.document-list {
+  width: 80%;
+  margin-top: 20px;
+  margin-left: 250px;
+}
 
-  
-  .action-icon {
-    cursor: pointer;
-    margin: 0 5px;
-    font-size: 1rem;
-    transition: color 0.3s;
-  }
-  
-  .action-icon:hover {
-    color: #0056b3;
-  }
-  
-  .table-hover tbody tr:hover {
-    background-color: #f1f1f1;
-  }
-  
-  .add-statut-btn {
-    display: inline-flex;
-    align-items: center;
-    background-color: #007bff; /* Couleur du bouton */
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1rem;
-    margin-bottom: 15px;
-  }
-  
-  .add-statut-btn i {
-    margin-right: 8px;
-    font-size: 1.2rem;
-  }
-  .delete-button {
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th {
+  background-color: #f8f9fa;
+  padding: 12px;
+  text-align: left;
+}
+
+.actions-column {
+  width: 150px;
+}
+
+/* Styles pour les icônes CRUD */
+.action-icon {
+  cursor: pointer;
+  margin: 0 5px;
+  font-size: 1.2rem;
+  transition: color 0.3s ease-in-out;
+}
+
+.action-icon.text-warning:hover {
+  color: orange; /* Couleur pour l'édition */
+}
+
+.action-icon.text-info:hover {
+  color: #17a2b8; /* Couleur pour la vue */
+}
+
+.action-icon.text-danger:hover {
+  color: darkred; /* Couleur pour la suppression */
+}
+
+/* Bouton pour suppression */
+.delete-button {
   background-color: transparent;
   border: none;
-  color: red;
   cursor: pointer;
   font-size: 1.2rem;
-  transition: color 0.3s;
+  color: red;
+  transition: color 0.3s ease-in-out;
 }
 
 .delete-button:hover {
   color: darkred;
 }
 
-  
-  .add-statut-btn:hover {
-    background-color: #0069d9; /* Couleur du bouton au survol */
-  }
-  </style>
-  
+.error {
+  color: red;
+  font-weight: bold;
+}
+
+/* Ajuster le bouton d'ajout pour un meilleur alignement */
+.mb-3 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.btn-primary {
+  font-size: 1rem;
+  padding: 8px 15px;
+}
+</style>

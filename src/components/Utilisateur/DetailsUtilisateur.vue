@@ -10,7 +10,7 @@
         <div v-if="errorMessage" class="alert alert-danger mt-4">
           {{ errorMessage }}
         </div>
-        <router-link :to="{ name: 'Utilisateurs' }" class="btn btn-secondary">Fermer</router-link>
+        <router-link :to="{ name: 'UserList' }" class="btn btn-secondary">Fermer</router-link>
       </div>
     </div>
   </template>
@@ -66,7 +66,7 @@
   
       // Fonction pour fermer le formulaire
       const closeForm = () => {
-        router.push({ name: 'Utilisateurs' });
+        router.push({ name: 'UserList' });
       };
   
       onMounted(fetchUser);

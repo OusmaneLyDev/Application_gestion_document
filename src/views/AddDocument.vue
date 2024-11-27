@@ -13,7 +13,7 @@
             placeholder="Entrez le titre"
           />
         </div>
-  
+
         <div class="form-group">
           <label for="description">Description du Document</label>
           <textarea
@@ -178,15 +178,15 @@
 
   try {
     isSubmitting.value = true;
-    await documentStore.addDocument(formData); // Ajoutez la gestion du FormData ici
-    successMessage.value = 'Document ajouté avec succès.';
+
+    await documentStore.addDocument(formData);
+
     toast.success(successMessage.value);
-    isSubmitting.value = false;
+
     setTimeout(() => {
       router.push({ name: 'DocumentsView' });
     }, 2000);
   } catch (error) {
-    errorMessage.value = 'Erreur lors de l\'ajout du document.';
     toast.error(errorMessage.value);
     console.error('Erreur API :', error);
   } finally {
@@ -198,6 +198,7 @@
       const goBack = () => {
         router.push({ name: 'DocumentsView' });
       };
+    
   
       return {
         document,

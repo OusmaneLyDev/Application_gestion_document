@@ -1,74 +1,88 @@
 <template>
-  <div class="edit-document-container">
-    <div class="edit-document-form-card">
-      <button @click="goBack" class="close-button">X</button>
-      <h2 class="form-title">Modifier le Document</h2>
-      <form @submit.prevent="updateDocument">
-        <div class="mb-4">
-          <label for="titre" class="form-label">Titre du Document</label>
-          <input
-            type="text"
-            id="titre"
-            v-model="document.titre"
-            class="form-control form-control-lg custom-input"
-            required
-            placeholder="Entrez le titre"
-          />
-        </div>
+  <div class="document-details-container">
+    <h1 class="text-center">Modifier le Document</h1>
 
-        <div class="mb-4">
-          <label for="description" class="form-label">Description</label>
-          <textarea
-            id="description"
-            v-model="document.description"
-            class="form-control form-control-lg custom-input"
-            placeholder="Entrez la description"
-          ></textarea>
-        </div>
+    <!-- Message de succès ou d'erreur -->
+    <div v-if="successMessage" class="alert alert-success">{{ successMessage }}</div>
+    <div v-if="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
 
-        <div class="mb-4">
-          <label for="type" class="form-label">Type de Document</label>
-          <select
-            id="type"
-            v-model="document.id_TypeDocument"
-            class="form-control form-control-lg custom-input"
-            required
-          >
-            <option value="" disabled>Choisissez un type</option>
-            <option v-for="type in documentTypes" :key="type.id" :value="type.id">
-              {{ type.nom }}
-            </option>
-          </select>
-        </div>
+    <!-- Formulaire de modification -->
+    <form @submit.prevent="updateDocument">
+      <div class="form-group">
+        <label for="titre">Titre du Document</label>
+        <input
+          type="text"
+          id="titre"
+          v-model="document.titre"
+          class="form-control"
+          required
+          placeholder="Entrez le titre"
+        />
+      </div>
 
-        <div class="mb-4">
-          <label for="statut" class="form-label">Statut du Document</label>
-          <select
-            id="statut"
-            v-model="document.id_StatutDocument"
-            class="form-control form-control-lg custom-input"
-            required
-          >
-            <option value="" disabled>Choisissez un statut</option>
-            <option v-for="statut in documentStatuses" :key="statut.id" :value="statut.id">
-              {{ statut.nom }}
-            </option>
-          </select>
-        </div>
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea
+          id="description"
+          v-model="document.description"
+          class="form-control"
+          placeholder="Entrez la description"
+        ></textarea>
+      </div>
 
-        <div v-if="successMessage" class="alert alert-success mt-4">{{ successMessage }}</div>
-        <div v-if="errorMessage" class="alert alert-danger mt-4">{{ errorMessage }}</div>
+      <div class="form-group">
+        <label for="type">Type de Document</label>
+        <select
+          id="type"
+          v-model="document.id_TypeDocument"
+          class="form-control"
+          required
+        >
+          <option value="" disabled>Choisissez un type</option>
+          <option v-for="type in documentTypes" :key="type.id" :value="type.id">
+            {{ type.nom }}
+          </option>
+        </select>
+      </div>
 
-        <div class="button-group">
-          <button type="submit" class="btn btn-success btn-lg me-2" :disabled="isSubmitting">
-            <i class="bi bi-check-circle"></i> {{ isSubmitting ? 'Modification en cours...' : 'Enregistrer' }}
-          </button>
-          <button type="button" class="btn btn-outline-secondary btn-lg" @click="goBack">
-            <i class="bi bi-x-circle"></i> Annuler
-          </button>
+      <div class="form-group">
+        <label for="statut">Statut du Document</label>
+        <select
+          id="statut"
+          v-model="document.id_StatutDocument"
+          class="form-control"
+          required
+        >
+          <option value="" disabled>Choisissez un statut</option>
+          <option v-for="statut in documentStatuses" :key="statut.id" :value="statut.id">
+            {{ statut.nom }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Fichier téléchargeable -->
+      <div class="form-group">
+        <label for="file">Fichier (facultatif)</label>
+        <input
+          type="file"
+          id="file"
+          @change="handleFileChange"
+          class="form-control"
+        />
+        <div v-if="document.fileUrl" class="mt-2">
+          <a :href="document.fileUrl" download class="btn btn-link">Télécharger le fichier actuel</a>
         </div>
-      </form>
-    </div>
+      </div>
+
+      <div class="button-group">
+        <button type="submit" class="btn btn-success">
+          {{ isSubmitting ? 'Modification en cours...' : 'Enregistrer' }}
+        </button>
+        <button type="button" class="btn btn-secondary" @click="goBack">
+          Annuler
+        </button>
+      </div>
+    </form>
   </div>
 </template>
 
@@ -90,6 +104,7 @@ const documentStatuses = ref([]);
 const successMessage = ref('');
 const errorMessage = ref('');
 const isSubmitting = ref(false);
+const selectedFile = ref(null);
 
 onMounted(() => {
   fetchDocumentDetails();
@@ -99,8 +114,8 @@ onMounted(() => {
 
 const fetchDocumentDetails = async () => {
   try {
-    await documentStore.fetchDocumentById(id); // Utilisation de l'action du store
-    document.value = documentStore.selectedDocument; // Récupération du document depuis le store
+    await documentStore.fetchDocumentById(id);
+    document.value = documentStore.selectedDocument;
   } catch (error) {
     errorMessage.value = 'Erreur lors de la récupération des détails du document.';
   }
@@ -108,8 +123,8 @@ const fetchDocumentDetails = async () => {
 
 const fetchDocumentTypes = async () => {
   try {
-    await documentStore.fetchTypes(); // Utilisation de l'action du store
-    documentTypes.value = documentStore.types; // Récupération des types depuis le store
+    await documentStore.fetchTypes();
+    documentTypes.value = documentStore.types;
   } catch (error) {
     errorMessage.value = 'Erreur lors de la récupération des types de document.';
   }
@@ -117,17 +132,31 @@ const fetchDocumentTypes = async () => {
 
 const fetchDocumentStatuses = async () => {
   try {
-    await documentStore.fetchStatuses(); // Utilisation de l'action du store
-    documentStatuses.value = documentStore.statuses; // Récupération des statuts depuis le store
+    await documentStore.fetchStatuses();
+    documentStatuses.value = documentStore.statuses;
   } catch (error) {
     errorMessage.value = 'Erreur lors de la récupération des statuts de document.';
   }
 };
 
+const handleFileChange = (event) => {
+  selectedFile.value = event.target.files[0];
+};
+
 const updateDocument = async () => {
   isSubmitting.value = true;
+  const formData = new FormData();
+  formData.append('titre', document.value.titre);
+  formData.append('description', document.value.description || '');
+  formData.append('id_TypeDocument', document.value.id_TypeDocument);
+  formData.append('id_StatutDocument', document.value.id_StatutDocument);
+
+  if (selectedFile.value) {
+    formData.append('file', selectedFile.value);
+  }
+
   try {
-    await documentStore.editDocument(id, document.value); // Utilisation de l'action du store pour modifier le document
+    await documentStore.editDocument(id, formData);
     successMessage.value = 'Document modifié avec succès.';
     setTimeout(() => router.push('/documents'), 2000);
   } catch (error) {
@@ -142,59 +171,41 @@ const goBack = () => {
 };
 </script>
 
-  
-  <style scoped>
-  .edit-document-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    background: linear-gradient(to right, #6a11cb, #2575fc);
-    padding: 20px;
-  }
-  
-  .edit-document-form-card {
-    position: relative;
-    background-color: #fff;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-    max-width: 600px;
-    width: 100%;
-    animation: fadeInUp 0.5s ease-in-out;
-  }
-  
-  .close-button {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: none;
-    border: none;
-    font-size: 1.2rem;
-    cursor: pointer;
-  }
-  
-  .form-title {
-    text-align: center;
-    font-weight: bold;
-    font-size: 1.8rem;
-    color: #444;
-    margin-bottom: 20px;
-  }
-  
-  .button-group {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-  }
-  
-  .custom-input {
-    border-radius: 8px;
-    border: 1px solid #ddd;
-  }
-  
-  .alert {
-    margin-top: 20px;
-  }
-  </style>
-  
+
+<style scoped>
+.document-details-container {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 30px;
+  border: 2px solid #ececec;
+  border-radius: 12px;
+  background-color: #ffffff;
+  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
+}
+.form-group {
+  margin-bottom: 20px;
+}
+label {
+  font-weight: 600;
+  color: #4a4a4a;
+}
+input,
+textarea,
+select {
+  font-size: 1rem;
+  color: #333333;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  width: 100%;
+}
+.button-group {
+  display: flex;
+  justify-content: flex-start;
+  gap: 10px;
+  margin-top: 20px;
+}
+.alert {
+  margin-bottom: 20px;
+}
+</style>

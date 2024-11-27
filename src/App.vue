@@ -1,9 +1,10 @@
 <template>
   <div id="app" class="sb-nav-fixed">
     <UserNotification ref="notification" /> <!-- Utilisation du composant ici -->
-    <AppNavbar @toggleSidebar="toggleSidebar" :utilisateur="utilisateur" />
+    
+    <AppNavbar @toggleSidebar="toggleSidebar" :utilisateur="utilisateur"  v-if="route.path !== '/'" />
     <div id="layoutSidenav">
-      <div id="layoutSidenav_nav" :class="{ 'd-none': !sidebarVisible }">
+      <div id="layoutSidenav_nav" v-if="route.path !== '/'" :class="{ 'd-none': !sidebarVisible }">
         <AppSidebar />
       </div>
       <div id="layoutSidenav_content">
@@ -17,18 +18,25 @@
 </template>
 
 <script>
+import { useRoute } from 'vue-router';
 import AppNavbar from './components/AppNavbar.vue';
 import AppSidebar from './components/AppSidebar.vue';
 import UserNotification from './components/UserNotification.vue'; 
 import axios from 'axios'; // Importation d'axios pour les requêtes
 
 export default {
+
   name: 'App',
   components: {
     AppNavbar,
     AppSidebar,
     UserNotification, 
   },
+  setup() {
+    const route = useRoute(); // Utiliser useRoute dans setup
+    return { route };
+  },
+  
   data() {
     return {
       sidebarVisible: true, 
@@ -39,6 +47,7 @@ export default {
     toggleSidebar() {
       this.sidebarVisible = !this.sidebarVisible;
     },
+    
     async fetchUtilisateur() {
       try {
         const token = localStorage.getItem('jwtToken');

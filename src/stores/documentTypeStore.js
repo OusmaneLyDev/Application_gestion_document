@@ -6,11 +6,11 @@ const API_URL = 'http://localhost:3051/api/types-document';
 
 export const useDocumentTypeStore = defineStore('documentType', {
   state: () => ({
-    types: [],                   // Liste des types de documents
-    typeDetail: null,            // Détails d'un type de document spécifique
-    errorMessage: null,          // Message d'erreur
-    successMessage: null,        // Message de succès
-    loading: false,              // Indicateur de chargement
+    types: [],                   
+    typeDetail: null,            
+    errorMessage: null,          
+    successMessage: null,        
+    loading: false,              
   }),
 
   actions: {
@@ -68,7 +68,6 @@ export const useDocumentTypeStore = defineStore('documentType', {
         const response = await axios.post(API_URL, newType);
         if (response.status === 201) {
           this.types.push(response.data);
-          this.setSuccessMessage("Type de document ajouté avec succès !");
         }
       } catch (error) {
         this.setErrorMessage(error.response?.data?.message || "Erreur lors de l'ajout du type de document.");

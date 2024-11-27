@@ -7,7 +7,7 @@ import AddDocument from '../views/AddDocument.vue';
 import ListeStatutDocument from '../components/ListeStatutDocument.vue';
 import ListeTypeDocument from '../components/ListeTypeDocument.vue';
 import TypeDocumentView from '@/views/TypeDocumentView.vue';
-import UtilisateurView from '@/views/UtilisateurView.vue';
+import UserList from '../components/Utilisateur/UserList.vue';
 import AddUser from '@/components/Utilisateur/AddUser.vue';
 import AddTypeDocument from '@/components/AddTypeDocument.vue';
 import EditDocument from '../views/EditDocument.vue';
@@ -37,7 +37,6 @@ const routes = [
     path: '/homepage',
     name: 'HomePage',
     component: HomePage,
-    meta: { requiresAuth: true },
   },
   {
     path: '/add-type',
@@ -121,10 +120,9 @@ const routes = [
     // meta: { requiresAuth: true },
   },
   {
-    path: '/utilisateurs',
-    name: 'Utilisateurs',
-    component: UtilisateurView,
-    // meta: { requiresAuth: true },
+    path: '/user-list', // URL accessible dans le navigateur
+    name: 'UserList',
+    component: UserList,
   },
   {
     path: '/dashboard',

@@ -1,49 +1,62 @@
 <template>
-    <div class="container add-type-container">
-      <h1>Ajouter un Nouveau Type de Document</h1>
-      <form @submit.prevent="handleSubmit">
-        <div class="form-group">
-          <label for="nom">Nom du Type</label>
-          <input v-model="type.nom" type="text" id="nom" placeholder="Nom du type de document" class="form-control" required />
-        </div>
-        <div class="form-group">
-          <label for="description">Description</label>
-          <textarea v-model="type.description" id="description" placeholder="Description du type de document" class="form-control" required></textarea>
-        </div>
-        <button type="submit" class="submit-btn">
-          <i class="fas fa-check"></i> Ajouter
-        </button>
-      </form>
+  <div class="container add-type-container">
+    <h1>Ajouter un Nouveau Type de Document</h1>
+    <form @submit.prevent="handleSubmit">
+      <div class="form-group">
+        <label for="nom">Nom du Type</label>
+        <input v-model="type.nom" type="text" id="nom" placeholder="Nom du type de document" class="form-control" required />
+      </div>
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea v-model="type.description" id="description" placeholder="Description du type de document" class="form-control" required></textarea>
+      </div>
+      <button type="submit" class="submit-btn">
+        <i class="fas fa-check"></i> Ajouter
+      </button>
+    </form>
+
+    <!-- Affichage du message d'erreur -->
+    <div v-if="documentTypeStore.errorMessage" class="alert alert-danger mt-3">
+      {{ documentTypeStore.errorMessage }}
     </div>
-  </template>
+  </div>
+</template>
+
   
-  <script>
-  import { ref } from 'vue';
-  import { useDocumentTypeStore } from '../stores/documentTypeStore';
-  import { useRouter } from 'vue-router';
-  
-  export default {
-    name: 'AddTypeDocument',
-    setup() {
-      const router = useRouter();
-      const documentTypeStore = useDocumentTypeStore();
-      const type = ref({
-        nom: '',
-        description: ''
-      });
-  
-      const handleSubmit = async () => {
-        await documentTypeStore.addType(type.value);
+<script>
+import { ref } from 'vue';
+import { useDocumentTypeStore } from '../stores/documentTypeStore';
+import { useRouter } from 'vue-router';
+import { useToast } from 'vue-toastification';
+
+
+export default {
+  name: 'AddTypeDocument',
+  setup() {
+    const router = useRouter();
+    const documentTypeStore = useDocumentTypeStore();
+    const toast = useToast();
+    const type = ref({
+      nom: '',
+      description: ''
+    });
+
+    const handleSubmit = async () => {
+      await documentTypeStore.addType(type.value);
+      if (!documentTypeStore.errorMessage) {
         router.push({ name: 'ListeTypeDocument' });
-      };
-  
-      return {
-        type,
-        handleSubmit
-      };
-    }
-  };
-  </script>
+      }
+    };
+
+    return {
+      type,
+      documentTypeStore,
+      handleSubmit
+    };
+  }
+};
+</script>
+
   
   <style scoped>
   .add-type-container {

@@ -7,24 +7,25 @@
     </div>
 
     <div v-else>
-      <div class="mb-3">
+      <div class="mb-3 d-flex justify-content-between">
+        <h4>Liste des Documents</h4>
         <button class="btn btn-primary" @click="addDocument">
-          <i class="fas fa-plus-circle"></i> Ajouter un Document
+          <i class="fas fa-plus-circle"></i> Ajouter
         </button>
       </div>
 
       <!-- Tableau des documents -->
-      <table class="table table-hover">
+      <table class="table table-striped table-bordered">
         <thead>
           <tr>
             <th>ID</th>
             <th>Titre</th>
             <th>Description</th>
             <th>Date de Dépôt</th>
-            <th>Type de Document</th>
-            <th>Statut du Document</th>
-            <th>Fichier</th> <!-- Nouvelle colonne -->
-            <th>Actions</th>
+            <th>Type</th>
+            <th>Statut</th>
+            <th>Fichier</th>
+            <th class="actions-column">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -36,7 +37,11 @@
             <td>{{ document.typeDocument.nom }}</td>
             <td>{{ document.statutDocument.nom }}</td>
             <td>
-              <a v-if="document.fichier" :href="`²  /uploads/${document.fichier}`" target="_blank">
+              <a 
+                v-if="document.fichier" 
+                :href="`http://127.0.0.1:3051/documents/${document.fichier}`" 
+                target="_blank"
+              >
                 Télécharger
               </a>
             </td>
@@ -53,14 +58,12 @@
               >
                 <i class="fas fa-eye text-info action-icon"></i>
               </router-link>
-
-              <!-- Bouton pour supprimer le document -->
               <button 
                 class="delete-button" 
                 @click="deleteDocument(document.id)" 
                 title="Supprimer"
               >
-                <i class="fas fa-trash-alt"></i>
+                <i class="fas fa-trash-alt text-danger"></i>
               </button>
             </td>
           </tr>
@@ -107,7 +110,7 @@ const deleteDocument = async (id) => {
   if (confirm('Êtes-vous sûr de vouloir supprimer ce document ?')) {
     try {
       await documentStore.deleteDocument(id);
-      await documentStore.fetchDocuments(); 
+      await documentStore.fetchDocuments();
     } catch (error) {
       console.error('Erreur lors de la suppression du document:', error);
       alert('Erreur lors de la suppression du document.');
@@ -118,54 +121,64 @@ const deleteDocument = async (id) => {
 
 <style scoped>
 .document-list {
-  width: 100%;
+  width: 130%;
   margin-top: 20px;
 }
 
 .table {
-  width: 130%;
+  width: 100%;
   border-collapse: collapse;
 }
 
 .table th {
-  background-color: #f2f2f2;
+  background-color: #f8f9fa;
 }
 
 .table th, .table td {
   padding: 12px;
+  text-align: center;
 }
 
-.table th:nth-child(8), .table td:nth-child(7) {
-  width: 140px;
+.actions-column {
+  width: 150px;
 }
 
-.error {
-  color: red;
-  font-weight: bold;
-}
-
+/* Styles pour les icônes CRUD */
 .action-icon {
   cursor: pointer;
   margin: 0 5px;
   font-size: 1.2rem;
-  transition: color 0.3s;
+  transition: color 0.3s ease-in-out;
 }
 
+.action-icon.text-warning:hover {
+  color: orange; /* Couleur pour l'édition */
+}
+
+.action-icon.text-info:hover {
+  color: #17a2b8; /* Couleur pour la vue */
+}
+
+.action-icon.text-danger:hover {
+  color: darkred; /* Couleur pour la suppression */
+}
+
+/* Bouton pour suppression */
 .delete-button {
   background-color: transparent;
   border: none;
-  color: red;
   cursor: pointer;
   font-size: 1.2rem;
-  transition: color 0.3s;
+  color: red;
+  transition: color 0.3s ease-in-out;
 }
 
 .delete-button:hover {
   color: darkred;
 }
 
-.action-icon:hover {
-  color: #0056b3;
+.error {
+  color: red;
+  font-weight: bold;
 }
 </style>
-  

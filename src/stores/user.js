@@ -19,7 +19,7 @@ export const useUserStore = defineStore('user', {
 
     // Méthode pour gérer la connexion
     async login(email, mot_de_passe) {
-      const toast = useToast();
+      const toast = useToast(); 
       this.loading = true;
       try {
         const response = await axios.post('http://localhost:3051/api/auth/login', {

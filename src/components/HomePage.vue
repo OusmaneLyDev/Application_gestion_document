@@ -1,7 +1,6 @@
 <template>
     <div class="home-page">
       <div class="hero-section">
-        <!-- Image de fond -->
         <img
           :src="require('@/assets/background.jpg')" 
           alt="Image de fond des documents"

@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-      <h1>Liste des Documents</h1>
+      <!-- <h1>Liste des Documents</h1> -->
       <!-- <button @click="goToAddDocument" class="add-document-btn">
         <i class="bi bi-file-earmark-plus"></i> Ajouter un document
       </button> -->
