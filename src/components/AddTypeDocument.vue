@@ -14,21 +14,14 @@
         <i class="fas fa-check"></i> Ajouter
       </button>
     </form>
-
-    <!-- Affichage du message d'erreur -->
-    <div v-if="documentTypeStore.errorMessage" class="alert alert-danger mt-3">
-      {{ documentTypeStore.errorMessage }}
-    </div>
   </div>
 </template>
 
-  
 <script>
 import { ref } from 'vue';
 import { useDocumentTypeStore } from '../stores/documentTypeStore';
 import { useRouter } from 'vue-router';
 import { useToast } from 'vue-toastification';
-
 
 export default {
   name: 'AddTypeDocument',
@@ -36,26 +29,28 @@ export default {
     const router = useRouter();
     const documentTypeStore = useDocumentTypeStore();
     const toast = useToast();
-    const type = ref({
-      nom: '',
-      description: ''
-    });
+    const type = ref({ nom: '', description: '' });
 
     const handleSubmit = async () => {
-      await documentTypeStore.addType(type.value);
-      if (!documentTypeStore.errorMessage) {
-        router.push({ name: 'ListeTypeDocument' });
+      try {
+        await documentTypeStore.addType(type.value);
+        if (!documentTypeStore.errorMessage) {
+          toast.success("Type de document ajouté avec succès !");
+          router.push({ name: 'ListeTypeDocument' });
+        }
+      } catch (error) {
+        toast.error("Une erreur est survenue lors de l'ajout du type de document.");
       }
     };
 
     return {
       type,
-      documentTypeStore,
-      handleSubmit
+      handleSubmit,
     };
-  }
+  },
 };
 </script>
+
 
   
   <style scoped>

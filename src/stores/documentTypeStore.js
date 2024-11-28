@@ -1,15 +1,15 @@
 import { defineStore } from 'pinia';
-import axios from '../axios'; // Assurez-vous que le chemin est correct
+import axios from '../axios';
+import { useToast } from 'vue-toastification';
 
-// URL de l'API centralisée
+
+const toast = useToast();
 const API_URL = 'http://localhost:3051/api/types-document';
 
 export const useDocumentTypeStore = defineStore('documentType', {
   state: () => ({
     types: [],                   
-    typeDetail: null,            
-    errorMessage: null,          
-    successMessage: null,        
+    typeDetail: null,                  
     loading: false,              
   }),
 
@@ -68,9 +68,10 @@ export const useDocumentTypeStore = defineStore('documentType', {
         const response = await axios.post(API_URL, newType);
         if (response.status === 201) {
           this.types.push(response.data);
+          toast.success("Nouveau type de document ajouté avec succès !");
         }
       } catch (error) {
-        this.setErrorMessage(error.response?.data?.message || "Erreur lors de l'ajout du type de document.");
+        toast.error(error.response?.data?.message || "Erreur lors de l'ajout du type de document.");
       } finally {
         this.loading = false;
       }
@@ -106,11 +107,9 @@ export const useDocumentTypeStore = defineStore('documentType', {
         if (index !== -1) {
           this.types[index] = response.data;
         }
-        this.setSuccessMessage("Le type de document a été mis à jour avec succès.");
-        return response.data;
+        toast.success("Type de document mis à jour avec succès !");
       } catch (error) {
-        this.setErrorMessage(error.response?.data?.message || "Erreur lors de la mise à jour du type de document.");
-        throw new Error('Erreur lors de la mise à jour du type de document');
+        toast.error(error.response?.data?.message || "Erreur lors de la mise à jour du type de document.");
       } finally {
         this.loading = false;
       }
@@ -123,10 +122,10 @@ export const useDocumentTypeStore = defineStore('documentType', {
         const response = await axios.delete(`${API_URL}/${id}`);
         if (response.status === 204) {
           this.types = this.types.filter((type) => type.id !== id);
-          this.setSuccessMessage("Type de document supprimé avec succès !");
+          toast.success("Type de document supprimé avec succès !");
         }
       } catch (error) {
-        this.setErrorMessage(error.response?.data?.message || "Erreur lors de la suppression du type de document.");
+        toast.error(error.response?.data?.message || "Erreur lors de la suppression, il est associé a un document.");
       } finally {
         this.loading = false;
       }

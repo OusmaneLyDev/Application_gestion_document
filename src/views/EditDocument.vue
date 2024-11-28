@@ -60,6 +60,17 @@
         </select>
       </div>
 
+      <!-- Date de dépôt -->
+      <div class="form-group">
+        <label for="date_depot">Date de dépôt</label>
+        <input
+          type="date"
+          id="date_depot"
+          v-model="document.date_depot"
+          class="form-control"
+        />
+      </div>
+
       <!-- Fichier téléchargeable -->
       <div class="form-group">
         <label for="file">Fichier (facultatif)</label>
@@ -150,6 +161,7 @@ const updateDocument = async () => {
   formData.append('description', document.value.description || '');
   formData.append('id_TypeDocument', document.value.id_TypeDocument);
   formData.append('id_StatutDocument', document.value.id_StatutDocument);
+  formData.append('date_depot', document.value.date_depot); // Date ajoutée ici
 
   if (selectedFile.value) {
     formData.append('file', selectedFile.value);
@@ -170,6 +182,7 @@ const goBack = () => {
   router.push('/documents');
 };
 </script>
+
 
 
 <style scoped>
