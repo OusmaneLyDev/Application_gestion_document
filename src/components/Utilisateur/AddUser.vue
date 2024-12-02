@@ -108,9 +108,26 @@ watch(serverErrors, (newErrors) => {
     errors.value[err.path] = err.msg;
   });
 });
+const validateNom = () => {
+  const regex = /^[a-zA-Z\s-]+$/;
+  if (!regex.test(nom.value)) {
+    errors.value.nom = "Le nom ne doit contenir que des lettres, espaces ou tirets.";
+    return false;
+  }
+  errors.value.nom = null;
+  return true;
+};
+
 
 const submitForm = async () => {
-  serverErrors.value = []; // Réinitialiser les erreurs serveur
+  serverErrors.value = []; 
+  
+  // Validation locale
+  if (!validateNom()) {
+    toast.error("Veuillez corriger les erreurs dans le formulaire.");
+    return;
+  }
+
   try {
     const confirmSubmit = confirm("Êtes-vous sûr de vouloir ajouter cet utilisateur ?");
     if (!confirmSubmit) return;
@@ -128,6 +145,7 @@ const submitForm = async () => {
     }
   }
 };
+
 
 const clearForm = () => {
   nom.value = "";

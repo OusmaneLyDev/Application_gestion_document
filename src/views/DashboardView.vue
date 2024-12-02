@@ -57,8 +57,8 @@ import { Chart, registerables } from 'chart.js';
 export default {
   data() {
     return {
-      totalDocuments: 123,
-      totalDocumentTypes: 8,
+      totalDocuments: 3,
+      totalDocumentTypes: 5,
       totalDocumentStatuses: 5,
       documentTypeLabels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
       documentTypeCounts: [30, 50, 20, 60, 80],

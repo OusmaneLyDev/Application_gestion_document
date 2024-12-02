@@ -6,6 +6,7 @@
       <form @submit.prevent="updateUser">
         <div class="mb-4">
           <label for="nom" class="form-label">Nom</label>
+
           <input
             id="nom"
             v-model="user.nom"
@@ -24,6 +25,20 @@
             required
           />
         </div>
+        
+        <div class="mb-4">
+          <label for="mot_de_passe" class="form-label">Mot de passe</label>
+          <input
+            id="mot_de_passe"
+            type="password"
+            v-model="user.mot_de_passe"
+            class="form-control form-control-lg custom-input"
+            minlength="8"
+            maxlength="100"
+            required
+          />
+        </div>
+
 
         <div class="mb-4">
           <label for="role" class="form-label">Rôle</label>

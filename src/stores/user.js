@@ -61,7 +61,7 @@ export const useUserStore = defineStore('user', {
         });
         this.users.push(response.data.utilisateur);
         this.errorMessage = null;
-        toast.success('Utilisateur ajouté avec succès');
+        // toast.success('Utilisateur ajouté avec succès');
       } catch (error) {
         this.errorMessage = this.handleError(error);
         toast.error(this.errorMessage);
