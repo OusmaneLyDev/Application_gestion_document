@@ -74,7 +74,7 @@
         </div>
   
         <div class="form-group">
-          <label for="file">Fichier (facultatif)</label>
+          <label for="file">Fichier</label>
           <input
             type="file"
             id="file"

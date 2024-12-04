@@ -111,19 +111,22 @@ export default {
     };
 
     const updateUser = async () => {
-      try {
-        console.log('Updating user:', user.value);
-        await userStore.updateUser(user.value.id, {
-          nom: user.value.nom,
-          email: user.value.email,
-          role: user.value.role
-        });
-        router.push({ name: 'user-list' }); 
-      } catch (error) {
-        console.error('Erreur lors de la mise à jour de l\'utilisateur:', error);
-        errorMessage.value = 'Erreur lors de la mise à jour de l\'utilisateur';
-      }
-    };
+  try {
+    console.log('Updating user:', user.value);
+    await userStore.updateUser(user.value.id, {
+      nom: user.value.nom,
+      email: user.value.email,
+      role: user.value.role,
+    });
+
+    // Rediriger après un succès
+    router.push({ name: 'UserList' });
+  } catch (error) {
+    console.error('Erreur lors de la mise à jour de l\'utilisateur:', error);
+    errorMessage.value = error.message || 'Erreur lors de la mise à jour de l\'utilisateur';
+  }
+};
+
 
     const goBack = () => {
       router.push({ name: 'UserList' });

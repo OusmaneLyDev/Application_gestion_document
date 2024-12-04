@@ -73,7 +73,7 @@
 
       <!-- Fichier téléchargeable -->
       <div class="form-group">
-        <label for="file">Fichier (facultatif)</label>
+        <label for="file">Fichier</label>
         <input
           type="file"
           id="file"
@@ -126,11 +126,18 @@ onMounted(() => {
 const fetchDocumentDetails = async () => {
   try {
     await documentStore.fetchDocumentById(id);
-    document.value = documentStore.selectedDocument;
+    const doc = documentStore.selectedDocument;
+
+    // Formater la date pour l'afficher dans le champ de type "date"
+    if (doc.date_depot) {
+      doc.date_depot = doc.date_depot.split('T')[0]; // Extrait uniquement la partie "YYYY-MM-DD"
+    }
+    document.value = doc;
   } catch (error) {
     errorMessage.value = 'Erreur lors de la récupération des détails du document.';
   }
 };
+
 
 const fetchDocumentTypes = async () => {
   try {
@@ -161,11 +168,13 @@ const updateDocument = async () => {
   formData.append('description', document.value.description || '');
   formData.append('id_TypeDocument', document.value.id_TypeDocument);
   formData.append('id_StatutDocument', document.value.id_StatutDocument);
-  formData.append('date_depot', document.value.date_depot); // Date ajoutée ici
+  formData.append('date_depot', document.value.date_depot);
 
   if (selectedFile.value) {
     formData.append('file', selectedFile.value);
   }
+
+  console.log('Données envoyées:', Object.fromEntries(formData)); // Ajouté pour debug
 
   try {
     await documentStore.editDocument(id, formData);
@@ -177,6 +186,7 @@ const updateDocument = async () => {
     isSubmitting.value = false;
   }
 };
+
 
 const goBack = () => {
   router.push('/documents');
