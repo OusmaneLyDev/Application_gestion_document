@@ -40,14 +40,19 @@
         </div>
 
 
+        <!-- Rôle -->
         <div class="mb-4">
           <label for="role" class="form-label">Rôle</label>
-          <input
+          <select
             id="role"
             v-model="user.role"
             class="form-control form-control-lg custom-input"
             required
-          />
+          >
+            <option value="" disabled>Choisissez un rôle</option>
+            <option value="Administrateur">Administrateur</option>
+            <option value="Gestionnaire RH">Gestionnaire RH</option>
+          </select>
         </div>
 
         <div class="button-group">

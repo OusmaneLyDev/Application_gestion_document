@@ -6,6 +6,7 @@
         <p><strong>ID:</strong> {{ user.id }}</p>
         <p><strong>Nom:</strong> {{ user.nom }}</p>
         <p><strong>Email:</strong> {{ user.email }}</p>
+        <p><strong>Rôle:</strong> {{ user.role }}</p>
         <p><strong>Date de création:</strong> {{ formatDate(user.date_creation) }}</p>
         <div v-if="errorMessage" class="alert alert-danger mt-4">
           {{ errorMessage }}
