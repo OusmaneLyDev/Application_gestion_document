@@ -63,15 +63,15 @@
   });
   
   const addDocumentType = async () => {
-    try {
-      await documentTypeStore.addType(documentType.value);
-      alert('Type de document ajouté avec succès !');
-      router.push('/Liste-type-document');
-    } catch (error) {
-      console.error('Erreur lors de l\'ajout du type de document :', error);
-      alert('Erreur lors de l\'ajout du type de document.');
-    }
-  };
+  try {
+    await documentTypeStore.addType(documentType.value);
+    router.push('/Liste-type-document'); // Rediriger après l'ajout
+  } catch (error) {
+    console.error("Erreur lors de l'ajout :", error);
+    alert("Erreur lors de l'ajout du type de document.");
+  }
+};
+
   
   const goBack = () => {
     router.push('/Liste-type-document');

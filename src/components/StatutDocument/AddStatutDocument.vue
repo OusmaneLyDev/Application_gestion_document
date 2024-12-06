@@ -61,10 +61,16 @@
     }, 1000);
   });
   
+  // Ajouter un nouveau statut
   const addStatut = async () => {
     try {
       await documentStatusStore.ajouterStatut(statut.value);
       alert('Statut ajouté avec succès !');
+      
+      // Force le rechargement de la liste des statuts après ajout
+      await documentStatusStore.fetchStatuts(true); 
+  
+      // Redirection vers la liste des statuts
       router.push('/statut-document');
     } catch (error) {
       console.error('Erreur lors de l\'ajout du statut :', error);
@@ -76,6 +82,7 @@
     router.push('/statut-document');
   };
   </script>
+  
   
   <style scoped>
   /* Conteneur de chargement */

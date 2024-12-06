@@ -20,7 +20,6 @@ export const useDocumentStatusStore = defineStore('documentStatus', {
       try {
         const response = await axios.get(API_URL);
         this.statuts = response.data;
-        toast.success('Liste des statuts récupérée avec succès !');
       } catch (error) {
         toast.error(error.response?.data?.message || "Erreur lors de la récupération des statuts. Veuillez réessayer.");
       } finally {
@@ -32,15 +31,14 @@ export const useDocumentStatusStore = defineStore('documentStatus', {
     async ajouterStatut(nouveauStatut) {
       this.loading = true;
       try {
-        // Validation des données
         if (!nouveauStatut.nom) {
           toast.error("Le nom du statut est requis.");
           return;
         }
-
+    
         const response = await axios.post(API_URL, nouveauStatut);
         if (response.status === 201) {
-          this.statuts.push(response.data); // Ajouter le nouveau statut localement
+          this.statuts.push(response.data); // Met à jour la liste locale
           toast.success('Statut ajouté avec succès !');
         }
       } catch (error) {
@@ -74,12 +72,12 @@ export const useDocumentStatusStore = defineStore('documentStatus', {
           toast.error("Le nom du statut est requis pour la mise à jour.");
           return;
         }
-
+    
         const response = await axios.put(`${API_URL}/${id}`, updatedData);
         if (response.status === 200) {
           const index = this.statuts.findIndex((statut) => statut.id === id);
           if (index !== -1) {
-            this.statuts[index] = response.data; // Mettre à jour le statut localement
+            this.statuts[index] = response.data; // Met à jour la liste locale
           }
           toast.success("Statut mis à jour avec succès !");
         }
@@ -92,29 +90,28 @@ export const useDocumentStatusStore = defineStore('documentStatus', {
 
     // Suppression d'un statut de document
     async supprimerStatut(id) {
-      const toast = useToast();
-      const confirmed = confirm('Êtes-vous sûr de vouloir supprimer ce statut ?');
-      if (confirmed) {
-        this.loading = true;
-        try {
-          // Envoi de la requête pour supprimer le statut
-          const response = await axios.delete(`http://localhost:3051/api/statuts-document/${id}`, {
-            headers: { Authorization: `Bearer ${this.token}` },
-          });
-          
-          // Si la suppression réussie
-          if (response.status === 204) {
-            this.statuts = this.statuts.filter(statut => statut.id !== id); // Mise à jour de la liste locale
-            toast.success('Le statut de document a été supprimé avec succès.');
-          } else {
-            toast.error('Une erreur est survenue lors de la suppression du statut.');
-          }
-        } catch (error) {
-          // Gestion des erreurs, avec un message clair si le statut est lié à un document
-          toast.error(errorMessage);
-        } finally {
-          this.loading = false;
+      this.loading = true;
+      try {
+        // Envoi de la requête pour supprimer le statut
+        const response = await axios.delete(`http://localhost:3051/api/statuts-document/${id}`, {
+          headers: { Authorization: `Bearer ${this.token}` },
+        });
+
+        // Vérifier si le message de succès est reçu
+        if (response.status === 200 || response.status === 204) {
+          const message = response.data?.message || "Statut de document supprimé avec succès.";
+          toast.success(message);
+
+          // Mettre à jour la liste des statuts en supprimant l'élément localement
+          this.statuts = this.statuts.filter(statut => statut.id !== id);
+        } else {
+          toast.error("Une erreur est survenue lors de la suppression.");
         }
+      } catch (error) {
+        const errorMessage = error.response?.data?.message || "Erreur lors de la suppression.";
+        toast.error(errorMessage);
+      } finally {
+        this.loading = false;
       }
     },
   },

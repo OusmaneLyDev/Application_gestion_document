@@ -9,7 +9,6 @@ import ListeTypeDocument from '../components/ListeTypeDocument.vue';
 import TypeDocumentView from '@/views/TypeDocumentView.vue';
 import UserList from '../components/Utilisateur/UserList.vue';
 import AddUser from '@/components/Utilisateur/AddUser.vue';
-import AddTypeDocument from '@/components/AddTypeDocument.vue';
 import EditDocument from '../views/EditDocument.vue';
 import DocumentDetails from '@/components/Document/DocumentDetails.vue';
 import EditDocumentType from '@/components/TypeDocument/EditDocumentType.vue';
@@ -44,12 +43,7 @@ const routes = [
     component: AddDocumentType,
   },
   
-  {
-    path: '/add-type',
-    name: 'AddType',
-    component: AddTypeDocument,
-    // meta: { requiresAuth: true },
-  },
+ 
   {
     path: '/add-statut',
     name: 'AddStatut',

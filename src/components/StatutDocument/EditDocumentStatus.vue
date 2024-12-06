@@ -42,11 +42,11 @@
   </template>
   
   <script>
-  import { ref, onMounted } from 'vue';
-  import { useRoute, useRouter } from 'vue-router';
-  import { useDocumentStatusStore } from '@/stores/documentStatusStore';
-  
-  export default {
+import { ref, onMounted } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import { useDocumentStatusStore } from '@/stores/documentStatusStore';
+
+export default {
   name: 'EditDocumentStatus',
   setup() {
     const route = useRoute();
@@ -56,7 +56,7 @@
     const statutDocument = ref({
       id: null,
       nom: '',
-      description: ''
+      description: '',
     });
 
     const errorMessage = ref('');
@@ -75,10 +75,17 @@
     // Mettre à jour les informations du statut
     const updateStatutDocument = async () => {
       try {
+        // Met à jour le statut dans la base de données ou le store
         await documentStatusStore.modifierStatut(statutDocument.value.id, statutDocument.value);
+
+        // Recharge la liste des statuts
+        await documentStatusStore.fetchStatuts(true);
+
+        // Redirige vers la liste des statuts
         router.push({ name: 'StatutDocument' });
       } catch (error) {
-        errorMessage.value = documentStatusStore.errorMessage || 'Erreur lors de la mise à jour du statut du document';
+        errorMessage.value =
+          documentStatusStore.errorMessage || 'Erreur lors de la mise à jour du statut du document';
       }
     };
 
@@ -93,12 +100,12 @@
       statutDocument,
       errorMessage,
       updateStatutDocument,
-      goBack
+      goBack,
     };
-  }
+  },
 };
+</script>
 
-  </script>
   
   
   <style scoped>
